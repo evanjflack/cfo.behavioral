@@ -1,11 +1,14 @@
 Package: polypharmacy
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Polypharmacy Project
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Authors@R: c(
+  person("Evan", "Flack", email = "evanjflack@gmail.com", 
+  role = c("aut", "cre")))
+Maintainer: Evan Flack <evanjflack@gmail.com>
+Description: This package contains functions for the polypharmacy project.
+Depends:
+  dplyr, 
+  data.table
 Encoding: UTF-8
 LazyData: true
