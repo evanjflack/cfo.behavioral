@@ -14,8 +14,8 @@
 #'  confidence interval construction (default is .05)
 #'
 #' @examples
-#' data <- data.table(x1 = sample(1:5, 1000, replace = T),
-#'                    x2 = sample(1:2, 1000, replace = T)) %>%
+#' data <- data.table(x1 = sample(1:5, 1000, replace = TRUE),
+#'                    x2 = sample(1:2, 1000, replace = TRUE)) %>%
 #'                    .[, y := 2*x1 + 4*x2 + rnorm(mean = 10, sd = 4, n = 1000)]
 #'
 #' calc_cmean(data, y = c("y"), x = c("x1", "x2"))
@@ -24,7 +24,7 @@
 #'
 #' @export
 calc_cmean <- function(data, y, x, se = FALSE, alpha = .05) {
-  if (se == T) {
+  if (se == TRUE) {
     ci_mult <- qnorm(1 - alpha / 2)
     DT_cmean <- data[, lapply(.SD, mean_se),  by = x, .SDcols = y]
     DT_cmean <- DT_cmean[, measure := rep(c("mean", "se"),
@@ -44,6 +44,6 @@ calc_cmean <- function(data, y, x, se = FALSE, alpha = .05) {
 }
 
 mean_se <- function(x) {
-  c(mean = mean(x, na.rm = T),
+  c(mean = mean(x, na.rm = TRUE),
     se = sd(x, na.rm = TRUE) / sqrt(sum(!is.na(x))))
 }
