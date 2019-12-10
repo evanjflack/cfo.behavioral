@@ -8,7 +8,6 @@ Author: Authors@R: c(
 Maintainer: Evan Flack <evanjflack@gmail.com>
 Description: This package contains functions for the polypharmacy project.
 Depends:
-  dplyr, 
   data.table
 Suggests:
     knitr,

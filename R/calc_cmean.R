@@ -13,10 +13,12 @@
 #' @param alpha a real number between 0 and 1, to use as the alpha level in
 #'  confidence interval construction (default is .05)
 #'
+#' @importFrom data.table data.table
 #' @examples
+#' library(data.table)
 #' data <- data.table(x1 = sample(1:5, 1000, replace = TRUE),
-#'                    x2 = sample(1:2, 1000, replace = TRUE)) %>%
-#'                    .[, y := 2*x1 + 4*x2 + rnorm(mean = 0, sd = 2, n = 1000)]
+#'                    x2 = sample(1:2, 1000, replace = TRUE))
+#' data[, y := 2*x1 + 4*x2 + rnorm(mean = 0, sd = 2, n = 1000)]
 #'
 #' calc_cmean(data, y = c("y"), x = c("x1", "x2"))
 #'
