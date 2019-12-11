@@ -14,6 +14,7 @@
 #'  confidence interval construction (default is .05)
 #'
 #' @importFrom data.table data.table
+#' 
 #' @examples
 #' library(data.table)
 #' data <- data.table(x1 = sample(1:5, 1000, replace = TRUE),
@@ -27,15 +28,16 @@
 #' @export
 calc_cmean <- function(data, y, x, se = FALSE, alpha = .05) {
   if (se == TRUE) {
-    ci_mult <- qnorm(1 - alpha / 2)
+    ci_mult <- stats::qnorm(1 - alpha / 2)
     DT_cmean <- data[, lapply(.SD, mean_se),  by = x, .SDcols = y]
     DT_cmean <- DT_cmean[, measure := rep(c("mean", "se"),
                                           nrow(DT_cmean) / 2)]
     DT_cmean <- data.table::melt(DT_cmean, id.var = c(x, "measure"))
     DT_cmean <- data.table::dcast(DT_cmean,
-                                  as.formula(paste(paste(x,
-                                                         collapse  = " + "),
-                                                   "+ variable ~ measure")),
+                                  stats::as.formula(paste(paste(x,
+                                                                collapse  = 
+                                                                  " + "),
+                                                          "+ variable ~ measure")),
                                   value.var = "value")
     DT_cmean[, `:=`(lb = mean - ci_mult * se, ub = mean + ci_mult * se)]
   } else {
@@ -47,5 +49,5 @@ calc_cmean <- function(data, y, x, se = FALSE, alpha = .05) {
 
 mean_se <- function(x) {
   c(mean = mean(x, na.rm = TRUE),
-    se = sd(x, na.rm = TRUE) / sqrt(sum(!is.na(x))))
+    se = stats::sd(x, na.rm = TRUE) / sqrt(sum(!is.na(x))))
 }
