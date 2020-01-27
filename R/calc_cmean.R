@@ -3,18 +3,14 @@
 #' calc_cmean() is a function that calculates sample means (plus
 #'  standard errors and confidence intervals) by group.
 #'
-#' @param data a data.frame or data.table
+#' @param DT a data.table
 #' @param y a character vector of column names of data to calculate the group mean
 #'  of
 #' @param x a character vector of columns in data to group by
 #' @param se logical, if TRUE output will calculate standard error and confidence
 #'  intervals of mean alng with  number of observations of conditional sample
 #' mean
-#' @param alpha a real number between 0 and 1, to use as the alpha level in
-#'  confidence interval construction (default is .05)
 #'
-#' @importFrom data.table data.table
-#' 
 #' @examples
 #' library(data.table)
 #' data <- data.table(x1 = sample(1:5, 1000, replace = TRUE),
@@ -26,28 +22,25 @@
 #' @return The data.frame/data.table of conditional sample means
 #'
 #' @export
-calc_cmean <- function(data, y, x, se = FALSE, alpha = .05) {
-  if (se == TRUE) {
-    ci_mult <- stats::qnorm(1 - alpha / 2)
-    DT_cmean <- data[, lapply(.SD, mean_se),  by = x, .SDcols = y]
-    DT_cmean <- DT_cmean[, measure := rep(c("mean", "se"),
-                                          nrow(DT_cmean) / 2)]
-    DT_cmean <- data.table::melt(DT_cmean, id.var = c(x, "measure"))
-    DT_cmean <- data.table::dcast(DT_cmean,
-                                  stats::as.formula(paste(paste(x,
-                                                                collapse  = 
-                                                                  " + "),
-                                                          "+ variable ~ measure")),
-                                  value.var = "value")
-    DT_cmean[, `:=`(lb = mean - ci_mult * se, ub = mean + ci_mult * se)]
-  } else {
-    DT_cmean <- data[, lapply(.SD, mean), by = x, .SDcols = y]
-    DT_cmean <- data.table::melt(DT_cmean, id.var = x, value.name = "mean")
+calc_cmean <- function(DT, y, x, se = F){
+  if (!is.data.table(DT)) stop("'DT' must be class data.table")
+  
+  mean_se <- function(x) {
+    c(mean = mean(x, na.rm = T), se = sd(x, na.rm = T)/sqrt(sum(!is.na(x))),
+      obs = sum(!is.na(x)))
   }
-  return(DT_cmean)
-}
-
-mean_se <- function(x) {
-  c(mean = mean(x, na.rm = TRUE),
-    se = stats::sd(x, na.rm = TRUE) / sqrt(sum(!is.na(x))))
+  
+  if (se == T) {
+    DT_cmean <- DT[, lapply(.SD, mean_se),  by = x, .SDcols = y] %>%
+      .[, measure := rep(c("mean", "se", "obs"), nrow(.)/3)] %>%
+      melt(id.var = c(x, "measure")) %>%
+      dcast(as.formula(paste(paste(x, collapse  = " + "),
+                             "+ variable ~ measure")),
+            value.var = "value") %>%
+      # 95% CI interval bounds
+      .[, `:=`(lb = mean - 1.96*se, ub = mean + 1.96*se)]
+  } else {
+    DT_cmean <- DT[, lapply(.SD, mean), by = x, .SDcols = y] %>%
+      melt(id.var = x, value.name = "mean")
+  }
 }

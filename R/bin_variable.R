@@ -10,18 +10,22 @@
 #' @param quant number of quantiles
 #'  
 #' @return vector of bins
+#' 
+#' @importFrom stats quantile
 #'
 #' @export
 bin_variable <- function(x, min = NULL, max = NULL, int = NULL, quant = NULL) {
   if (is.null(quant)) {
-    bins <- cut(x, c(-Inf, seq(min, max, int), Inf), seq(min, max + int, int))
-    bins <- as.numeric(as.character(bins))
+    cut(x, c(-Inf, seq(min, max, int), Inf),
+        seq(min, max + int, int)) %>%
+      as.character() %>%
+      as.numeric()
   } else {
-    cuts <- stats::quantile(x, seq(0, 1, 1/quant))
+    cuts <- quantile(x, seq(0, 1, 1/quant))
     cuts[1] <- -Inf
     cuts[length(cuts)] <- Inf
-    bins <- cut(x, cuts, seq(1, quant))
-    bins <- as.numeric(as.character(bins))
+    cut(x, cuts, seq(1, quant)) %>%
+      as.character() %>%
+      as.numeric()
   }
-  return(bins)
 }

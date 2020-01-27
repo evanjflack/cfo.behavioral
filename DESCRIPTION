@@ -8,18 +8,20 @@ Author: Authors@R: c(
 Maintainer: Evan Flack <evanjflack@gmail.com>
 Description: This package contains functions for the polypharmacy project.
 Depends:
-  data.table
-Imports:
-  foreach,
+  data.table, 
   dplyr, 
   magrittr
+Imports: 
+  stringr, 
+  broom,
+  Matrix,
+  tictoc, 
+  optparse
 Suggests:
-    knitr,
-    rmarkdown,
-    testthat, 
-    doParallel,
-    estimatr
+  knitr,
+  rmarkdown,
+  testthat
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 License: MIT + file LICENSE

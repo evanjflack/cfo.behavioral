@@ -4,10 +4,10 @@
 \alias{calc_cmean}
 \title{Calculate conditional sample means and standard errors}
 \usage{
-calc_cmean(data, y, x, se = FALSE, alpha = 0.05)
+calc_cmean(DT, y, x, se = F)
 }
 \arguments{
-\item{data}{a data.frame or data.table}
+\item{DT}{a data.table}
 
 \item{y}{a character vector of column names of data to calculate the group mean
 of}
@@ -17,9 +17,6 @@ of}
 \item{se}{logical, if TRUE output will calculate standard error and confidence
  intervals of mean alng with  number of observations of conditional sample
 mean}
-
-\item{alpha}{a real number between 0 and 1, to use as the alpha level in
-confidence interval construction (default is .05)}
 }
 \value{
 The data.frame/data.table of conditional sample means
