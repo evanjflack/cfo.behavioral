@@ -8,7 +8,7 @@
 #' @importFrom dplyr `%>%`
 #' @importFrom stringr str_split_fixed
 #' @importFrom broom tidy
-#' @importFrom stats lm as.formula formula sd
+#' @importFrom stats lm as.formula formula sd quantile
 #' @importFrom tictoc tic toc
 #' @importFrom optparse parse_args OptionParser
 #' @importFrom magrittr `%<>%`
