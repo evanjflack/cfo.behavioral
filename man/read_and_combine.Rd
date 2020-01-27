@@ -4,9 +4,11 @@
 \alias{read_and_combine}
 \title{Combine multiple years of data into one data.table}
 \usage{
-read_and_combine(file, years, pct, loud = FALSE)
+read_and_combine(lib_base_data, file, years, pct, loud = FALSE)
 }
 \arguments{
+\item{lib_base_data}{the base directory for data}
+
 \item{file}{base file name}
 
 \item{years}{vecotor of years}

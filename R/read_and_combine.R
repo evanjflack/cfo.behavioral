@@ -1,5 +1,6 @@
 #' Combine multiple years of data into one data.table
 #' 
+#' @param lib_base_data the base directory for data
 #' @param file base file name
 #' @param years vecotor of years
 #' @param pct string, sample percentage
@@ -8,7 +9,7 @@
 #' @return combined data.table
 #' 
 #' @export
-read_and_combine <- function(file, years, pct, loud = FALSE) {
+read_and_combine <- function(lib_base_data, file, years, pct, loud = FALSE) {
   DT <- data.table()
   for (i in years) {
     if (loud == T) {

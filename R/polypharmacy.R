@@ -18,7 +18,7 @@ NULL
 
 ## quiets concerns of R CMD check re: the .'s that appear in pipelines
 if(getRversion() >= "2.15.1") {
-  utils::globalVariables(c(".", ".SD", "estimate", "lib_base_data", 
+  utils::globalVariables(c(".", ".SD", "estimate",
                            "measure", "month", "std.error", "subset_var",
                            "term", "variable", "y"))
 } 
