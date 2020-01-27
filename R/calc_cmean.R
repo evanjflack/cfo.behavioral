@@ -24,12 +24,6 @@
 #' @export
 calc_cmean <- function(DT, y, x, se = F){
   if (!is.data.table(DT)) stop("'DT' must be class data.table")
-  
-  mean_se <- function(x) {
-    c(mean = mean(x, na.rm = T), se = sd(x, na.rm = T)/sqrt(sum(!is.na(x))),
-      obs = sum(!is.na(x)))
-  }
-  
   if (se == T) {
     DT_cmean <- DT[, lapply(.SD, mean_se),  by = x, .SDcols = y] %>%
       .[, measure := rep(c("mean", "se", "obs"), nrow(.)/3)] %>%
@@ -43,4 +37,9 @@ calc_cmean <- function(DT, y, x, se = F){
     DT_cmean <- DT[, lapply(.SD, mean), by = x, .SDcols = y] %>%
       melt(id.var = x, value.name = "mean")
   }
+}
+
+mean_se <- function(x) {
+  c(mean = mean(x, na.rm = T), se = sd(x, na.rm = T)/sqrt(sum(!is.na(x))),
+    obs = sum(!is.na(x)))
 }

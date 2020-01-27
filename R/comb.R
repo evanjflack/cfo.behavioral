@@ -1,4 +1,4 @@
-#' Combine list of data.table entries into one data.table
+#' Combine list of data.tables into one data.table
 #'
 #' @param x list of data.tables
 #' @param ... additional arguments

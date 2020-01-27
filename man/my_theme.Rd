@@ -4,7 +4,12 @@
 \alias{my_theme}
 \title{Default ggplot2 themes}
 \usage{
-my_theme()
+my_theme(
+  base_size = 11,
+  base_family = "",
+  base_line_size = base_size/22,
+  base_rect_size = base_size/22
+)
 }
 \description{
 Default ggplot2 themes

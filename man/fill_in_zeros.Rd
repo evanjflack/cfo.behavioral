@@ -2,20 +2,23 @@
 % Please edit documentation in R/fill_in_zeros.R
 \name{fill_in_zeros}
 \alias{fill_in_zeros}
-\title{Fill in NAs as 0}
+\title{Add rows and fill 0s}
 \usage{
 fill_in_zeros(DT, DT_id, id_name)
 }
 \arguments{
-\item{DT}{a data.table with NA values}
+\item{DT}{a data.table generated from claims data}
 
-\item{DT_id}{a data.table with all unique IDs}
+\item{DT_id}{a data.table with all IDs in analytic sample}
 
-\item{id_name}{name of id column(s)}
+\item{id_name}{name of id column(s) that are in both DT and DT_id}
 }
 \value{
 data.frame with added rows and 0s
 }
 \description{
-Fill in NAs as 0
+When making features based on claims data, it is often the case that some 
+ people in your sample will not have any claims. fill_in_zeros() adds these 
+ individuals to the data.frame generated from the claims data and fills in a 
+ value of 0 for these people with no claims.
 }
