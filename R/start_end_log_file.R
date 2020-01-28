@@ -4,7 +4,7 @@
 #' @param file_name path to log file (relative to current directory)
 #' 
 #' @export
-start_log_file <- function(log_file, file_name) {
+start_log_file <- function(log_file = T, file_name) {
   if (log_file == T) {
     full_name <- paste0(file_name, ".log")
     con <- file(full_name)
