@@ -4,10 +4,13 @@
 \alias{unpack_opt}
 \title{Unpack command line options}
 \usage{
-unpack_opt(option_list)
+unpack_opt(option_list, print = TRUE)
 }
 \arguments{
 \item{option_list}{option list from command line}
+
+\item{print}{logical, if TRUE then checks for common elemtns of option_list 
+and prints them}
 }
 \description{
 Unpack command line options
