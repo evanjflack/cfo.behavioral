@@ -1,31 +1,33 @@
 #' Bin a numeric variable
 #' 
-#' bin_variable() is a function that creates bins of wither equal interval 
-#'  length of equal size.
+#' bin_variable() is a function that creates bins of either equal interval 
+#'  length of equal size (quartiles)
 #'  
-#' @param x numeric vector to be binned
-#' @param min where to start binning
-#' @param max where to end binnig
-#' @param int interval length of bins
-#' @param quant number of quantiles
+#' @param x numeric vector, variable to binned
+#' @param min numeric, where to start binning
+#' @param max numeric, where to end binnig
+#' @param int numeric, interval length of bins
+#' @param quant, interger, number of quantiles
 #'  
-#' @return vector of bins
-#' 
-#' @importFrom stats quantile
+#' @return vector of bin labels
 #'
 #' @export
 bin_variable <- function(x, min = NULL, max = NULL, int = NULL, quant = NULL) {
+  # Bins of equal length
   if (is.null(quant)) {
-    cut(x, c(-Inf, seq(min, max, int), Inf),
-        seq(min, max + int, int)) %>%
+    bins <- cut(x, 
+                breaks = c(-Inf, seq(min, max, int), Inf), 
+                labels = seq(min, max + int, int)) %>%
       as.character() %>%
       as.numeric()
   } else {
+  # Bins of equal size (quantiles)
     cuts <- quantile(x, seq(0, 1, 1/quant))
     cuts[1] <- -Inf
     cuts[length(cuts)] <- Inf
-    cut(x, cuts, seq(1, quant)) %>%
+    bins <- cut(x, breaks = cuts, labels = seq(1, quant)) %>%
       as.character() %>%
       as.numeric()
   }
+  return(bins)
 }

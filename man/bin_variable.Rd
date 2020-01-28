@@ -7,20 +7,20 @@
 bin_variable(x, min = NULL, max = NULL, int = NULL, quant = NULL)
 }
 \arguments{
-\item{x}{numeric vector to be binned}
+\item{x}{numeric vector, variable to binned}
 
-\item{min}{where to start binning}
+\item{min}{numeric, where to start binning}
 
-\item{max}{where to end binnig}
+\item{max}{numeric, where to end binnig}
 
-\item{int}{interval length of bins}
+\item{int}{numeric, interval length of bins}
 
-\item{quant}{number of quantiles}
+\item{quant, }{interger, number of quantiles}
 }
 \value{
-vector of bins
+vector of bin labels
 }
 \description{
-bin_variable() is a function that creates bins of wither equal interval 
- length of equal size.
+bin_variable() is a function that creates bins of either equal interval 
+ length of equal size (quartiles)
 }

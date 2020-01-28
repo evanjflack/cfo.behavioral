@@ -2,7 +2,7 @@
 % Please edit documentation in R/comb.R
 \name{comb}
 \alias{comb}
-\title{Combine list of data.table entries into one data.table}
+\title{Combine list of data.tables into one data.table}
 \usage{
 comb(x, ...)
 }
@@ -15,5 +15,5 @@ comb(x, ...)
 Combined data.table
 }
 \description{
-Combine list of data.table entries into one data.table
+Combine list of data.tables into one data.table
 }

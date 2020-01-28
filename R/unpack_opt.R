@@ -7,10 +7,10 @@ unpack_opt <- function(option_list) {
   opt <- suppressWarnings(parse_args(OptionParser(option_list=option_list)))
   opt$help <- NULL
   invisible(list2env(opt, .GlobalEnv))
-  # if (exists("first_year") & exists("last_year")) {
-  #   years <- seq(first_year, last_year)
-  #   environment(years) <- .GlobalEnv
-  # }
+  if (exists("first_year") & exists("last_year")) {
+    years <- list(years = seq(first_year, last_year))
+    invisible(list2env(years, .GlobalEnv))
+  }
 }
 
 #' Print sample options
