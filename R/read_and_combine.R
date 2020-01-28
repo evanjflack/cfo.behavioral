@@ -18,7 +18,7 @@ read_and_combine <- function(lib_base_data, file, years, pct, loud = FALSE) {
     DT1 <- fread(paste0(lib_base_data, file, "_", i, "_",
                         pct, ".csv")) %>%
       setnames(names(.), tolower(names(.)))
-    DT %<>% rbind(DT1)()
+    DT %<>% rbind(DT1)
   }
   return(DT)
 }
