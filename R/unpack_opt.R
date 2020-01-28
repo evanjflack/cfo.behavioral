@@ -3,7 +3,7 @@
 #' @param option_list option list from command line
 #' 
 #' @export
-unpack_opt <- function(option_list) {
+unpack_opt <- function(option_list, print = TRUE) {
   opt <- suppressWarnings(parse_args(OptionParser(option_list=option_list)))
   opt$help <- NULL
   invisible(list2env(opt, .GlobalEnv))
