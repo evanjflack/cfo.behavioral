@@ -1,4 +1,4 @@
-# This checks to see that calc cmean
+# This checks to see that calc cmean converges to the true conditional mean
 
 N <- 1000000
 library(data.table)

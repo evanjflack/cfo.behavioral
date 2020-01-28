@@ -1,4 +1,4 @@
 library(testthat)
-library(bacondecomp)
+library(polypharmacy)
 
-test_check("bacondecomp")
+test_check("polypharmacy")

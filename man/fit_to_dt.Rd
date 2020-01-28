@@ -14,7 +14,7 @@ fit_to_dt(fit, primary, interacts = NULL)
 \item{interacts}{names of the interaction variables (factors)}
 }
 \value{
-a data.table()
+data.table with all coefficients of primary variable
 }
 \description{
 fit_to_dt() is a function that converts the results of a model into a 
