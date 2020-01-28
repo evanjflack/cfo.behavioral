@@ -24,19 +24,3 @@ unpack_opt <- function(option_list) {
     }
   }
 }
-
-opt["pct"]$pct
-
-#' Print sample options
-#' 
-#' @param print_list list of things to print
-#' 
-#' @export
-print_opts <- function(print_list){
-  print_vec <- unlist(print_list)
-  p <- ""
-  for (i in names(print_vec)) {
-    p <-  paste0(p, i, " = ", print_vec[i], "\n")
-  }
-  message(p)
-}
