@@ -5,7 +5,7 @@
 #'  and prints them
 #' 
 #' @export
-unpack_opt <- function(option_list, print = TRUE) {
+unpack_opt <- function(option_list) {
   opt <- suppressWarnings(parse_args(OptionParser(option_list=option_list)))
   opt$help <- NULL
   invisible(list2env(opt, .GlobalEnv))
@@ -14,15 +14,4 @@ unpack_opt <- function(option_list, print = TRUE) {
     invisible(list2env(years, .GlobalEnv))
   }
   # Print Options
-  if (print == T) {
-    if ("pct" %in% names(opt)) {
-      message("pct = ", opt$pct)
-    }
-    if ("first_year" %in% names(opt) & "last_year" %in% names(opt)) {
-      message("years = ", opt$first_year, "-", opt$last_year)
-    }
-    if ("resp_var" %in% names(opt)) {
-      message("resp_var = ", opt$resp_var)
-    }
-  }
 }

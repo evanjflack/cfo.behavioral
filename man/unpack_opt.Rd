@@ -4,7 +4,7 @@
 \alias{unpack_opt}
 \title{Unpack command line options}
 \usage{
-unpack_opt(option_list, print = TRUE)
+unpack_opt(option_list)
 }
 \arguments{
 \item{option_list}{option list from command line}

@@ -4,7 +4,7 @@
 \alias{start_log_file}
 \title{Start a log file}
 \usage{
-start_log_file(log_file, file_name)
+start_log_file(log_file = TRUE, file_name = NULL, print = TRUE)
 }
 \arguments{
 \item{log_file}{logical, if TRUE then starts a log file}
