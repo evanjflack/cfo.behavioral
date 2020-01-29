@@ -8,9 +8,6 @@ unpack_opt(option_list)
 }
 \arguments{
 \item{option_list}{option list from command line}
-
-\item{print}{logical, if TRUE then checks for common elemtns of option_list 
-and prints them}
 }
 \description{
 Unpack command line options

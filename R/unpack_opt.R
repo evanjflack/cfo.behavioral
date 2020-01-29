@@ -1,8 +1,6 @@
 #' Unpack command line options
 #' 
 #' @param option_list option list from command line
-#' @param print logical, if TRUE then checks for common elemtns of option_list 
-#'  and prints them
 #' 
 #' @export
 unpack_opt <- function(option_list) {
