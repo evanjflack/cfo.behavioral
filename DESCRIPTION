@@ -9,6 +9,7 @@ Maintainer: Evan Flack <evanjflack@gmail.com>
 Description: This package contains functions for the polypharmacy project.
 Depends:
   data.table,
+  rlang, 
   dplyr,
   magrittr
 Imports:
