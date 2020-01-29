@@ -2,13 +2,11 @@
 % Please edit documentation in R/start_end_log_file.R
 \name{end_log_file}
 \alias{end_log_file}
-\title{End a log file}
+\title{End a .log file}
 \usage{
-end_log_file(log_file)
-}
-\arguments{
-\item{log_file}{logicial, if TRUE then closes connection to current log file}
+end_log_file()
 }
 \description{
-End a log file
+Checks to see if a connection is open to a .log file, and ends the connection
+ if one exists.
 }
