@@ -16,7 +16,9 @@ Imports:
   broom,
   Matrix,
   tictoc,
-  optparse
+  optparse, 
+  foreach, 
+  doParallel
 Suggests:
   knitr,
   rmarkdown,

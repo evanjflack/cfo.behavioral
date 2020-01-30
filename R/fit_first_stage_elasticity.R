@@ -89,7 +89,7 @@ fit_first_stage_perc_change <- function(DT, y,  months = "1_12",
 fit_first_stage_raw <- function(DT, y,  months = "1_12", 
                                 x_main = "first_mo", x_int = NULL, 
                                 keep_vars, cont_risk_var = NULL, 
-                                n_quant = 5, B = 10) {
+                                n_quant = 5) {
   
   # Prep Data
   DT <- prep_data(DT, keep_vars, cont_risk_var, n_quant)

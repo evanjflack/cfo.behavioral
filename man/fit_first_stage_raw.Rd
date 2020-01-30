@@ -12,8 +12,7 @@ fit_first_stage_raw(
   x_int = NULL,
   keep_vars,
   cont_risk_var = NULL,
-  n_quant = 5,
-  B = 10
+  n_quant = 5
 )
 }
 \arguments{

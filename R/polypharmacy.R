@@ -13,6 +13,8 @@
 #' @importFrom optparse parse_args OptionParser
 #' @importFrom magrittr `%<>%`
 #' @importFrom Matrix Matrix
+#' @importFrom foreach foreach %dopar%
+#' @importFrom doParallel registerDoParallel stopImplicitCluster
 #' 
 NULL
 
@@ -27,4 +29,4 @@ if(getRversion() >= "2.15.1") {
 if(getRversion() >= "2.15.1") {
   utils::globalVariables(c("l_mean", "obs", "high_risk_abs", "inst_var", "obs", 
                            "risk_cut_abs", "se", "year", "month1"))
-} 
+}
