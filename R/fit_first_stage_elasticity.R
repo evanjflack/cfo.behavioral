@@ -21,6 +21,8 @@
 #' 
 #' @return a data.table of the first stage estimates (and their standard errors) 
 #'  in percentage terms by the specified interactions
+#'  
+#' @export
 fit_first_stage_perc_change <- function(DT, y,  months = "1_12", 
                                         x_main = "first_mo", x_int = NULL, 
                                         keep_vars, cont_risk_var = NULL, 
