@@ -23,3 +23,8 @@ if(getRversion() >= "2.15.1") {
                            "term", "variable", "y", "pct", "first_year", 
                            "last_year", "resp_var"))
 } 
+
+if(getRversion() >= "2.15.1") {
+  utils::globalVariables(c("l_mean", "obs", "high_risk_abs", "inst_var", "obs", 
+                           "risk_cut_abs", "se", "year", "month1"))
+} 

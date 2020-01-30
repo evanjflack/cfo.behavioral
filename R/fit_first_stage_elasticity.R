@@ -139,3 +139,5 @@ bootstrap_fs <- function(DT, y, month, x_main, x_int, form, B) {
   dt_se <- dtp_boot[, .(se = sd(estimate)), by = x_int]
   return(dt_se)
 }
+
+
