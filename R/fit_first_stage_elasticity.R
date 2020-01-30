@@ -34,15 +34,15 @@ fit_first_stage_perc_change <- function(DT, y,  months = "1_12",
   x_int <- c("pred_cut1", x_int)
   
   # Make Formula
-  form <- make_formula(x_main, x_int)
+  form <- make_formula(y = "l_mean", x_main, x_int)
   
   dt_est <- data.table()
   for (j in months) {
     print(j)
     # Estimates
-    dt_est1 <- estimate_fs(DT, y, month = j, x_main, x_int, form)
+    dt_est1 <- estimate_fs_perc_change(DT, y, month = j, x_main, x_int, form)
     # Standard errors
-    dt_se1 <- bootstrap_fs(DT, y, month = j, x_main, x_int, form, B)
+    dt_se1 <- bootstrap_fs_perc_change(DT, y, month = j, x_main, x_int, form, B)
     # labels
     dt_est1 %<>% 
       merge(dt_se1, by = x_int) %>% 
@@ -57,6 +57,63 @@ fit_first_stage_perc_change <- function(DT, y,  months = "1_12",
     .[, `:=`(lb = estimate - 1.96*se, ub = estimate + 1.96*se)]
   
   # labels
+  if ("high_risk_abs" %in% x_int) {
+    dt_est %<>%
+      .[, high_risk_abs := factor(high_risk_abs, labels = c("Low", "High"))]
+  }
+  
+  return(dt_est)
+}
+
+#' Estimate First Stage
+#' 
+#' Estimate the first stage (y ~ first_mo), where y is a binary variable (e.g. 
+#'  statin fill indiator) in gross terms
+#'  
+#' @param DT a data.table
+#' @param y character vector, name of response variable(s) without months suffix
+#' @param months character vector (default = "1_12"), months of y variable to 
+#'  estimate. Should be in the form "YEAR_MONTH" where year is between 1 and 2 
+#'  and month is between 1 and 12. 
+#' @param x_main character (default = "first_mo"), name of instrument
+#' @param x_int character vector, names of variables to interact instrument with
+#' @param keep_vars character vector, column names for the binary keep variables
+#' @param cont_risk_var character (default = NULL), name of the continuous 
+#'  predicted risk variable
+#' @param n_quant integer (default = 5), number of quntiles to break predicted 
+#'  risk in to. High risk is defined as being in the top quantile.
+#' 
+#' @return a data.table of the first stage estimates (and their standard errors) 
+#'  
+#' @export
+fit_first_stage_raw <- function(DT, y,  months = "1_12", 
+                                x_main = "first_mo", x_int = NULL, 
+                                keep_vars, cont_risk_var = NULL, 
+                                n_quant = 5, B = 10) {
+  
+  # Prep Data
+  DT <- prep_data(DT, keep_vars, cont_risk_var, n_quant)
+  
+  x_int <- c("pred_cut1", x_int)
+  
+  # Make Formula
+  form <- make_formula("y", x_main, x_int)
+  
+  dt_est <- data.table()
+  for (j in months) {
+    print(j)
+    # Estimates
+    dt_est1 <- estimate_fs_raw(DT, y, month = j, x_main, x_int, form)
+    # Labels
+    dt_est1 %<>% 
+      .[, variable := paste0(y, "_", j)] %>% 
+      .[, year := as.numeric(str_split_fixed(j, "_", 2)[1])] %>% 
+      .[, month := as.numeric(str_split_fixed(j, "_", 2)[2])] %>% 
+      .[, month1 := (year - 1)*12 + month]
+    dt_est %<>% rbind(dt_est1)
+  }
+  
+  # Labels
   if ("high_risk_abs" %in% x_int) {
     dt_est %<>%
       .[, high_risk_abs := factor(high_risk_abs, labels = c("Low", "High"))]
@@ -94,14 +151,14 @@ paste_factor <- function(x) {
   paste0("factor(", x, ")")
 }
 
-make_formula <- function(x_main, x_int) {
+make_formula <- function(y, x_main, x_int) {
   int1 <- paste0(c(x_main, paste_factor(x_int)), collapse = ":")
   int2 <- paste0(paste_factor(x_int), collapse = "*")
-  form <- as.formula(paste("l_mean ~", paste(int1, int2, sep = " + ")))
+  form <- as.formula(paste(y, "~", paste(int1, int2, sep = " + ")))
   return(form)
 }
 
-estimate_fs <- function(DT, y, month, x_main, x_int, form) {
+estimate_fs_perc_change <- function(DT, y, month, x_main, x_int, form) {
   if (month != "1_12") {
     DT %<>% 
       .[get(paste0("alive_", month)) == 1, ]
@@ -119,7 +176,7 @@ estimate_fs <- function(DT, y, month, x_main, x_int, form) {
   return(dt_est)
 }
 
-bootstrap_fs <- function(DT, y, month, x_main, x_int, form, B) {
+bootstrap_fs_perc_change <- function(DT, y, month, x_main, x_int, form, B) {
   if (month != "1_12") {
     DT %<>% 
       .[get(paste0("alive_", month)) == 1, ]
@@ -142,4 +199,16 @@ bootstrap_fs <- function(DT, y, month, x_main, x_int, form, B) {
   return(dt_se)
 }
 
-
+estimate_fs_raw <- function(DT, y, month, x_main, x_int, form) {
+  if (month != "1_12") {
+    DT %<>% 
+      .[get(paste0("alive_", month)) == 1, ]
+  }
+  var <- y
+  DT[, y := get(paste0(var, "_", month))]
+  
+  fit <- lm(form, data = DT)
+  
+  dt_est <- fit_to_dt(fit, x_main, x_int)
+  return(dt_est)
+}
