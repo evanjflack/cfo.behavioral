@@ -2,6 +2,7 @@
 
 export(bin_variable)
 export(calc_cmean)
+export(calc_spending_by_month)
 export(comb)
 export(create_mortality_outcomes)
 export(end_log_file)
