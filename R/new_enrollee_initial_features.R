@@ -1,9 +1,10 @@
 #' Make ATC Indicators
 #' 
-#' @param DT data.table
-#' @param DT_id data.table
-#' @param id_vars character vector
-#' @param xwalk data.table
+#' @param DT data.table with all elements of id_vars as well as lab_prod
+#' @param DT_id data.table data.table with all elements of id_vars
+#' @param id_vars character vector, names of variables to aggregate on
+#' @param xwalk data.table with columns lab_prod as well as any indicators 
+#'  (usually atc1-4 or rxcui)
 #' 
 #' @return data.table of atc indicators at the level of DT_id
 #' 
