@@ -7,17 +7,42 @@
 iterate_2sls(DT, grid, max_cores)
 }
 \arguments{
-\item{DT}{a data.table,}
+\item{DT}{a data.table with relevant model/sample option variables. Must have 
+all the "keep" variables in grid, as well as the variables for all the 
+options specified in grid. For example, if outcome = "mort" and 
+outcome_period = 30, DT must have a column named "mort_30".}
 
-\item{grid}{a data.table, estimation grid}
+\item{grid}{a data.table with estimation options (see below)}
 
 \item{max_cores}{integer, maximum number of parallels cores allowed to run at
 once}
 }
 \value{
-a data.table with the estimation options, 2SLS estimates, SEs, 
- p-values, CIs, etc...
+data.table with the estimation options (from grid), 2SLS estimates, 
+ SEs, p-values, CIs, etc...
 }
 \description{
-Estimate 2SLS Mortality Model
+Iterate estimation of the 2SLS mortality model over multiple specificiations.
+}
+\details{
+grid
+\itemize{
+ \item{outcome: }{character, name of outcome variable, ex: "mort"}
+ \item{outcome_period: }{integer, period of outcome, ex: 30}
+ \item{instrument: }{character, name of instumental variable, ex: "first_mo"}
+ \item{deg: }{integer, degree polynomial of instrument to include, ex: 2}
+ \item{cut_int: }{numeric, size of predicted spending bins, ex: 500}
+ \item{pred_type: }{character, type of spending prediction to use, ex: "ensemble}
+ \item{time_interact: }{character, name of the time variable to interact with 
+   instrument and predicted spending, ex: "rfrnc_yr"}
+ \item{se_type: }{character, type of SEs to calculate, inherits from estimatr 
+  iv_robust, ex: "stata"}
+ \item{keep_age: }{boolean, if 1 then subsets sample to only those enrolling 
+  at age 65}
+ \item{keep_jan: }{boolean, if 1 then removes January enrollees from sample}
+ \item{keep_join_month: }{boolean, if 1 then restricts sample to those 
+  enrolling in initial enrollment period (IEP)}
+ \item{keep_same: }{boolean, if 1 then restricts sample to those enrolling in
+  theor birth month}
+}
 }
