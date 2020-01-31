@@ -6,6 +6,8 @@
 #' @param initial_days integer
 #' 
 #' @return data.table
+#' 
+#' @export
 indicate_initial_atc <- function(DT, DT_id, atc_ind, initial_days) {
   initial_DT <- DT %>%
     .[within_days %between% c(0, initial_days), ] %>%
@@ -28,6 +30,8 @@ indicate_initial_atc <- function(DT, DT_id, atc_ind, initial_days) {
 #' @param initial_days integer vector
 #' 
 #' @return data.table
+#' 
+#' @export
 calc_initial_spending <- function(DT, DT_id, initial_days) {
   initial_spending <- DT %>% 
     .[within_days >= 0, ]
