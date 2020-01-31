@@ -4,14 +4,14 @@
 \alias{start_log_file}
 \title{Start a .log file}
 \usage{
-start_log_file(log_file = TRUE, file_name = NULL, print = TRUE)
+start_log_file(file_name = NULL, log_file = TRUE, print = TRUE)
 }
 \arguments{
-\item{log_file}{logical (default TRUE), if TRUE then opens a connection to 
-a .log file and diverts messages and output to that file}
-
 \item{file_name}{string, path to log file (relative to current directory), 
 do not include .log in the path}
+
+\item{log_file}{logical (default TRUE), if TRUE then opens a connection to 
+a .log file and diverts messages and output to that file}
 
 \item{print, }{logical (defaut TRUE), if TRUE checks for common parameters in
 the global environment and prints them at the top of the .log file}

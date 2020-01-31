@@ -1,3 +1,22 @@
+#' Make ATC Indicators
+#' 
+#' @param DT data.table
+#' @param DT_id data.table
+#' @param id_vars character vector
+#' @param atc_ind data.table
+#' 
+#' @return data.table of atc indicators at the level of DT_id
+#' 
+#' @export
+make_atc_indicators <- function(DT, DT_id, id_vars, atc_ind) {
+  DT_atc <- DT %>% 
+    merge(atc_ind, by = "lab_prod") %>% 
+    .[, lab_prod := NULL] %>% 
+    .[, lapply(.SD, max), by = id_vars] %>% 
+    fill_in_zeros(DT_id, id_vars)
+  return(DT_atc)
+}
+
 #' Create Initial ATC Indicators (New Enrollees)
 #' 
 #' @param DT data.table
@@ -15,11 +34,7 @@ indicate_initial_atc <- function(DT, DT_id, atc_ind, initial_days) {
     .[within_days %between% c(0, initial_days), ] %>%
     .[, .(bene_id, lab_prod)]
   
-  initial_atc <- initial_DT %>% 
-    merge(atc_ind, by = "lab_prod") %>% 
-    .[, lab_prod := NULL] %>% 
-    .[, lapply(.SD, max), by = bene_id] %>% 
-    fill_in_zeros(DT_id[, .(bene_id)], "bene_id")
+  initial_atc <- make_atc_indicators(initial_DT, DT_id, "bene_id", atc_ind)
   
   return(initial_atc)
 }
