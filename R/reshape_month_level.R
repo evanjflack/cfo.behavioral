@@ -7,6 +7,8 @@
 #' 
 #' @return long data.table
 #' 
+#' @importFrom data.table melt setnames setorderv
+#' 
 #' @export
 reshape_month_level <- function(DT, id_vars, reshape_vars, value_name) {
   DT %>%

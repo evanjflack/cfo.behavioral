@@ -8,15 +8,17 @@ Author: Authors@R: c(
 Maintainer: Evan Flack <evanjflack@gmail.com>
 Description: This package contains functions for the polypharmacy project.
 Depends:
-  data.table, 
-  dplyr, 
+  data.table,
   magrittr
-Imports: 
-  stringr, 
+Imports:
+  stringr,
   broom,
   Matrix,
-  tictoc, 
-  optparse
+  tictoc,
+  optparse,
+  foreach, 
+  doParallel,
+  estimatr
 Suggests:
   knitr,
   rmarkdown,

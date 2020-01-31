@@ -3,6 +3,7 @@
 #' @param x a matrix 
 #' 
 #' @return a sparse matrix
+#' @importFrom Matrix Matrix
 #' 
 #' @export
 sparsify <- function(x) {

@@ -4,7 +4,13 @@
 \alias{subset_sample}
 \title{Subset to analystic sample}
 \usage{
-subset_sample(DT, subset_vars, progress = F, balance_vars = NULL)
+subset_sample(
+  DT,
+  subset_vars,
+  progress = F,
+  balance_vars = NULL,
+  inst = "first_mo"
+)
 }
 \arguments{
 \item{DT}{a data.table}
@@ -15,6 +21,8 @@ subset_sample(DT, subset_vars, progress = F, balance_vars = NULL)
 function is}
 
 \item{balance_vars}{string character, if non-NULL, then estimates balance}
+
+\item{inst}{chatacter, name of instrument to check balance on}
 }
 \value{
 a list with three elements

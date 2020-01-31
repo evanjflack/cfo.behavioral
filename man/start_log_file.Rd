@@ -2,15 +2,20 @@
 % Please edit documentation in R/start_end_log_file.R
 \name{start_log_file}
 \alias{start_log_file}
-\title{Start a log file}
+\title{Start a .log file}
 \usage{
-start_log_file(log_file, file_name)
+start_log_file(log_file = TRUE, file_name = NULL, print = TRUE)
 }
 \arguments{
-\item{log_file}{logical, if TRUE then starts a log file}
+\item{log_file}{logical (default TRUE), if TRUE then opens a connection to 
+a .log file and diverts messages and output to that file}
 
-\item{file_name}{path to log file (relative to current directory)}
+\item{file_name}{string, path to log file (relative to current directory), 
+do not include .log in the path}
+
+\item{print, }{logical (defaut TRUE), if TRUE checks for common parameters in
+the global environment and prints them at the top of the .log file}
 }
 \description{
-Start a log file
+Start a .log file
 }

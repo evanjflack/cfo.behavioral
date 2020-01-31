@@ -8,6 +8,8 @@
 #' 
 #' @return combined data.table
 #' 
+#' @importFrom data.table setnames data.table fread
+#' 
 #' @export
 read_and_combine <- function(lib_base_data, file, years, pct, loud = FALSE) {
   DT <- data.table()
