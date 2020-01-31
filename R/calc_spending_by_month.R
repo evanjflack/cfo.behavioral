@@ -28,3 +28,9 @@ calc_spending_by_month <- function(DT, DT_id) {
   
   return(cost_mo)
 }
+
+# Deal with R CMD check
+if(getRversion() >= "2.15.1") {
+  utils::globalVariables(c("bene_id", "cost", "month", "year", "lab_prod", 
+                           "within_days"))
+}

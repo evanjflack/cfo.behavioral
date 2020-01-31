@@ -11,7 +11,6 @@
 indicate_initial_atc <- function(DT, DT_id, atc_ind, initial_days) {
   initial_DT <- DT %>%
     .[within_days %between% c(0, initial_days), ] %>%
-    .[, lab_prod := str_pad(lab_prod, 9, pad = "0")] %>% 
     .[, .(bene_id, lab_prod)]
   
   initial_atc <- initial_DT %>% 
@@ -46,4 +45,9 @@ calc_initial_spending <- function(DT, DT_id, initial_days) {
     fill_in_zeros(DT_id[, .(bene_id)], "bene_id")
   
   return(initial_spending)
+}
+
+# Deal with R CMD check
+if(getRversion() >= "2.15.1") {
+  utils::globalVariables(c("bene_id", "lab_prod", "within_days"))
 }

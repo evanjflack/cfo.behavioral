@@ -126,3 +126,13 @@ make_2sls_formula <- function(controls, time_interact, deg) {
     as.formula()
   return(form)
 }
+
+# Deal with R CMD check
+if(getRversion() >= "2.15.1") {
+  utils::globalVariables(c("cut_int", "deg", "instrument", "iv_est", 
+                           "iv_se", "keep_age", "keep_jan", "keep_join_month", 
+                           "keep_same", "keep_join_month", "lb", "outcome", 
+                           "outcome_period", "p.value", "pred_cut", 
+                           "pred_type", 
+                           "se_type", "statistic", "time_interact", "ub"))
+}

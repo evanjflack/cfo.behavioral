@@ -3,12 +3,12 @@
 #' @docType package
 #' @name polypharmacy
 #' 
-#' @importFrom dplyr %>%
-#' @importFrom data.table data.table is.data.table as.data.table `:=` copy setnames melt uniqueN setorderv dcast fread
+#' @importFrom data.table data.table is.data.table as.data.table `:=` %between%
+#' @importFrom data.table copy setnames melt uniqueN setorderv dcast fread
 #' @importFrom dplyr `%>%`
-#' @importFrom stringr str_split_fixed
+#' @importFrom stringr str_split_fixed str_pad
 #' @importFrom broom tidy
-#' @importFrom stats lm as.formula formula sd quantile
+#' @importFrom stats lm as.formula formula sd quantile ave
 #' @importFrom tictoc tic toc
 #' @importFrom optparse parse_args OptionParser
 #' @importFrom magrittr `%<>%`
