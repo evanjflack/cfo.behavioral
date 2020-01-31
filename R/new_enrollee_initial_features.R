@@ -7,6 +7,8 @@
 #' 
 #' @return data.table
 #' 
+#' @importFrom data.table data.table %between%
+#' 
 #' @export
 indicate_initial_atc <- function(DT, DT_id, atc_ind, initial_days) {
   initial_DT <- DT %>%

@@ -3,30 +3,13 @@
 #' @docType package
 #' @name polypharmacy
 #' 
-#' @importFrom data.table data.table is.data.table as.data.table `:=` %between%
-#' @importFrom data.table copy setnames melt uniqueN setorderv dcast fread
-#' @importFrom dplyr `%>%`
-#' @importFrom stringr str_split_fixed str_pad
-#' @importFrom broom tidy
-#' @importFrom stats lm as.formula formula sd quantile ave
-#' @importFrom tictoc tic toc
-#' @importFrom optparse parse_args OptionParser
-#' @importFrom magrittr `%<>%`
-#' @importFrom Matrix Matrix
-#' @importFrom foreach foreach %dopar%
-#' @importFrom doParallel registerDoParallel stopImplicitCluster
+#' @importFrom data.table `:=` 
+#' @importFrom magrittr `%<>%` `%>%`
 #' 
 NULL
 
-## quiets concerns of R CMD check re: the .'s that appear in pipelines
+# quiets concerns of R CMD check re: the .'s that appear in pipelines and the 
+# .SD that occur in data.table
 if(getRversion() >= "2.15.1") {
-  utils::globalVariables(c(".", ".SD", "estimate",
-                           "measure", "month", "std.error", "subset_var",
-                           "term", "variable", "y", "pct", "first_year", 
-                           "last_year", "resp_var"))
-} 
-
-if(getRversion() >= "2.15.1") {
-  utils::globalVariables(c("l_mean", "obs", "high_risk_abs", "inst_var", "obs", 
-                           "risk_cut_abs", "se", "year", "month1"))
+  utils::globalVariables(c(".", ".SD"))
 }

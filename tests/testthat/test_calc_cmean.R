@@ -2,7 +2,6 @@
 
 N <- 1000000
 library(data.table)
-library(dplyr)
 library(tidyr)
 
 x1 <- seq(1, 5)

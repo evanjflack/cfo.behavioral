@@ -9,6 +9,9 @@
 #' 
 #' @return a list with three elements
 #' 
+#' @importFrom stats lm
+#' @importFrom data.table copy uniqueN data.table
+#' 
 #' @export
 subset_sample <- function(DT, subset_vars, progress = F, balance_vars = NULL, 
                           inst = "first_mo") {
@@ -48,3 +51,7 @@ iter_balance_fit <- function(DT, balance_vars, inst = "first_mo") {
   }
   return(dt_fit)
 }
+
+if(getRversion() >= "2.15.1") {
+  utils::globalVariables(c("y", "inst_var", "variable", "subset_var"))
+} 

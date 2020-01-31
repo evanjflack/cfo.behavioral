@@ -14,6 +14,10 @@
 #' fit <- lm(mpg ~ wt:factor(cyl) + factor(cyl), data = DT)
 #' dt_fit <- fit_to_dt(fit, primary = "wt", interacts = "cyl")
 #' 
+#' @importFrom broom tidy
+#' @importFrom data.table as.data.table
+#' @importFrom stringr str_split_fixed
+#' 
 #' @export
 fit_to_dt <- function(fit, primary, interacts = NULL) {
   dtp_fit <- tidy(fit) %>%
@@ -35,3 +39,7 @@ fit_to_dt <- function(fit, primary, interacts = NULL) {
     .[, `:=`(lb = estimate - 1.96*std.error, ub = estimate + 1.96*std.error)]
   return(dtp_fit)
 }
+
+if(getRversion() >= "2.15.1") {
+  utils::globalVariables(c("term", "estimate", "std.error"))
+} 

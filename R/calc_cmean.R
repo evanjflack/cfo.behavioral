@@ -20,6 +20,9 @@
 #' calc_cmean(data, y = c("y"), x = c("x1", "x2"))
 #'
 #' @return The data.frame/data.table of conditional sample means
+#' 
+#' @importFrom data.table is.data.table melt
+#' @importFrom stats as.formula sd
 #'
 #' @export
 calc_cmean <- function(DT, y, x, se = F){
@@ -43,3 +46,8 @@ mean_se <- function(x) {
   c(mean = mean(x, na.rm = T), se = sd(x, na.rm = T)/sqrt(sum(!is.na(x))),
     obs = sum(!is.na(x)))
 }
+
+if(getRversion() >= "2.15.1") {
+  utils::globalVariables(c("measure"))
+} 
+

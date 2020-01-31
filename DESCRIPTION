@@ -9,16 +9,16 @@ Maintainer: Evan Flack <evanjflack@gmail.com>
 Description: This package contains functions for the polypharmacy project.
 Depends:
   data.table,
-  dplyr,
   magrittr
 Imports:
   stringr,
   broom,
   Matrix,
   tictoc,
-  optparse, 
+  optparse,
   foreach, 
-  doParallel
+  doParallel,
+  estimatr
 Suggests:
   knitr,
   rmarkdown,

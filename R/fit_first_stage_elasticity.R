@@ -22,6 +22,10 @@
 #' @return a data.table of the first stage estimates (and their standard errors) 
 #'  in percentage terms by the specified interactions
 #'  
+#'  @importFrom data.table data.table
+#' @importFrom stringr str_split_fixed
+#' @importFrom stats as.formula
+#'  
 #' @export
 fit_first_stage_perc_change <- function(DT, y,  months = "1_12", 
                                         x_main = "first_mo", x_int = NULL, 
@@ -212,3 +216,8 @@ estimate_fs_raw <- function(DT, y, month, x_main, x_int, form) {
   dt_est <- fit_to_dt(fit, x_main, x_int)
   return(dt_est)
 }
+
+if(getRversion() >= "2.15.1") {
+  utils::globalVariables(c("l_mean", "obs", "estimate", "variable", "month1", 
+                           "se", "high_risk_abs", "risk_cut_abs"))
+} 

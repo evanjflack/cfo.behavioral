@@ -6,6 +6,8 @@
 #'  do not include .log in the path
 #' @param print, logical (defaut TRUE), if TRUE checks for common parameters in
 #'  the global environment and prints them at the top of the .log file
+#'  
+#' @importFrom tictoc tic toc
 #' 
 #' @export
 start_log_file <- function(log_file = TRUE, file_name = NULL, print = TRUE) {
@@ -54,3 +56,7 @@ end_log_file <- function() {
     sink(type="message")
   }
 }
+
+if(getRversion() >= "2.15.1") {
+  utils::globalVariables(c("pct", "first_year", "last_year", "resp_var"))
+} 

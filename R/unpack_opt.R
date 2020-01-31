@@ -2,6 +2,8 @@
 #' 
 #' @param option_list option list from command line
 #' 
+#' @importFrom optparse parse_args OptionParser
+#' 
 #' @export
 unpack_opt <- function(option_list) {
   opt <- suppressWarnings(parse_args(OptionParser(option_list=option_list)))

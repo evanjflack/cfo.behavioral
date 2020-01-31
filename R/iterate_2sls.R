@@ -34,9 +34,15 @@
 #' @return data.table with the estimation options (from grid), 2SLS estimates, 
 #'  SEs, p-values, CIs, etc...
 #'  
+#' @importFrom estimatr iv_robust
+#' @importFrom data.table as.data.table setnames copy
+#' @importFrom foreach foreach %dopar%
+#' @importFrom doParallel registerDoParallel stopImplicitCluster
+#' @importFrom stats as.formula
+#'  
 #' @export
 iterate_2sls <- function(DT, grid, max_cores) {
-  cores <- min(config$max_cores, nrow(grid))
+  cores <- min(max_cores, nrow(grid))
   registerDoParallel(cores = cores)
   dtp  <- foreach(instrument = grid$instrument, 
                   deg = grid$deg, 
@@ -133,6 +139,6 @@ if(getRversion() >= "2.15.1") {
                            "iv_se", "keep_age", "keep_jan", "keep_join_month", 
                            "keep_same", "keep_join_month", "lb", "outcome", 
                            "outcome_period", "p.value", "pred_cut", 
-                           "pred_type", 
-                           "se_type", "statistic", "time_interact", "ub"))
+                           "pred_type", "se_type", "statistic", "time_interact",
+                           "ub", "obs"))
 }

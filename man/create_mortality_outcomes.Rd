@@ -4,10 +4,18 @@
 \alias{create_mortality_outcomes}
 \title{Creat Mortality Outcomes}
 \usage{
-create_mortality_outcomes(DT_deaths, start_day = 0, int = 30, int_num = 12)
+create_mortality_outcomes(
+  DT_deaths,
+  DT_id = "pde_benes",
+  start_day = 0,
+  int = 30,
+  int_num = 12
+)
 }
 \arguments{
 \item{DT_deaths}{data.table with bene_id, and from_days}
+
+\item{DT_id}{data table with bene_id}
 
 \item{start_day}{integer (default = 0), when to start counting outcomes from}
 

@@ -10,6 +10,8 @@
 #' @param quant, interger, number of quantiles
 #'  
 #' @return vector of bin labels
+#' 
+#' @importFrom stats quantile
 #'
 #' @export
 bin_variable <- function(x, min = NULL, max = NULL, int = NULL, quant = NULL) {

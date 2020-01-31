@@ -7,6 +7,10 @@
 #'  that month), and cum_cost (total spending in that year, through that month)
 #'  
 #' @export
+#' 
+#' @importFrom data.table dcast melt setnames
+#' @importFrom stats ave
+#' @importFrom stringr str_split_fixed
 calc_spending_by_month <- function(DT, DT_id) {
   
   cost_mo <- DT %>% 
@@ -31,6 +35,5 @@ calc_spending_by_month <- function(DT, DT_id) {
 
 # Deal with R CMD check
 if(getRversion() >= "2.15.1") {
-  utils::globalVariables(c("bene_id", "cost", "month", "year", "lab_prod", 
-                           "within_days"))
+  utils::globalVariables(c("bene_id", "month", "year", "cost", "cum_cost"))
 }
