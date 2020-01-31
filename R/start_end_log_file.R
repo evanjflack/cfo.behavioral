@@ -34,6 +34,9 @@ start_log_file <- function(log_file = TRUE, file_name = NULL, print = TRUE) {
       if (exists("resp_var")) {
         message("resp_var = ", resp_var)
       }
+      if (exists("year")) {
+        message("year = ", year)
+      }
     }
   }
 }
