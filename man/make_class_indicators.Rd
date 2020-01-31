@@ -7,13 +7,14 @@
 make_class_indicators(DT, DT_id, id_vars, xwalk)
 }
 \arguments{
-\item{DT}{data.table}
+\item{DT}{data.table with all elements of id_vars as well as lab_prod}
 
-\item{DT_id}{data.table}
+\item{DT_id}{data.table data.table with all elements of id_vars}
 
-\item{id_vars}{character vector}
+\item{id_vars}{character vector, names of variables to aggregate on}
 
-\item{xwalk}{data.table}
+\item{xwalk}{data.table with columns lab_prod as well as any indicators 
+(usually atc1-4 or rxcui)}
 }
 \value{
 data.table of atc indicators at the level of DT_id

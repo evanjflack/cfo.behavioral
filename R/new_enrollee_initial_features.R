@@ -22,7 +22,7 @@ make_class_indicators <- function(DT, DT_id, id_vars, xwalk) {
 #' 
 #' @param DT data.table
 #' @param DT_id data.table
-#' @param xwalk data.table
+#' @param atc_ind data.table, lab_prod to atc indicator xwalk
 #' @param initial_days integer
 #' 
 #' @return data.table
