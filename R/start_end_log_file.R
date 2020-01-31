@@ -10,7 +10,7 @@
 #' @importFrom tictoc tic toc
 #' 
 #' @export
-start_log_file <- function(log_file = TRUE, file_name = NULL, print = TRUE) {
+start_log_file <- function(file_name = NULL, log_file = TRUE, print = TRUE) {
   if (log_file == TRUE) {
     if (is.null(file_name)) {
       stop("File name required")
