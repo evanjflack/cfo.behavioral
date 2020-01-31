@@ -13,7 +13,7 @@ make_class_indicators(DT, DT_id, id_vars, xwalk)
 
 \item{id_vars}{character vector}
 
-\item{atc_ind}{data.table}
+\item{xwalk}{data.table}
 }
 \value{
 data.table of atc indicators at the level of DT_id
