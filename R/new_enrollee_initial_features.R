@@ -3,14 +3,14 @@
 #' @param DT data.table
 #' @param DT_id data.table
 #' @param id_vars character vector
-#' @param atc_ind data.table
+#' @param xwalk data.table
 #' 
 #' @return data.table of atc indicators at the level of DT_id
 #' 
 #' @export
-make_atc_indicators <- function(DT, DT_id, id_vars, atc_ind) {
+make_class_indicators <- function(DT, DT_id, id_vars, xwalk) {
   DT_atc <- DT %>% 
-    merge(atc_ind, by = "lab_prod") %>% 
+    merge(xwalk, by = "lab_prod") %>% 
     .[, lab_prod := NULL] %>% 
     .[, lapply(.SD, max), by = id_vars] %>% 
     fill_in_zeros(DT_id, id_vars)
@@ -21,7 +21,7 @@ make_atc_indicators <- function(DT, DT_id, id_vars, atc_ind) {
 #' 
 #' @param DT data.table
 #' @param DT_id data.table
-#' @param atc_ind data.table
+#' @param xwalk data.table
 #' @param initial_days integer
 #' 
 #' @return data.table
@@ -30,11 +30,14 @@ make_atc_indicators <- function(DT, DT_id, id_vars, atc_ind) {
 #' 
 #' @export
 indicate_initial_atc <- function(DT, DT_id, atc_ind, initial_days) {
+  # Subset to claims within initial days
   initial_DT <- DT %>%
     .[within_days %between% c(0, initial_days), ] %>%
     .[, .(bene_id, lab_prod)]
   
-  initial_atc <- make_atc_indicators(initial_DT, DT_id, "bene_id", atc_ind)
+  # Merge with xwalk and aggregate
+  initial_atc <- make_class_indicators(initial_DT, DT_id, "bene_id", 
+                                       xwalk = atc_ind)
   
   return(initial_atc)
 }
