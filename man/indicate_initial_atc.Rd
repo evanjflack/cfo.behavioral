@@ -11,7 +11,7 @@ indicate_initial_atc(DT, DT_id, atc_ind, initial_days)
 
 \item{DT_id}{data.table}
 
-\item{atc_ind}{data.table}
+\item{atc_ind}{data.table, lab_prod to atc indicator xwalk}
 
 \item{initial_days}{integer}
 }
