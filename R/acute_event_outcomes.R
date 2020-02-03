@@ -64,7 +64,7 @@ create_diag_indicators <- function(DT, DT_id, id_var, ami_codes, stroke_codes,
   DT %<>%
     .[, lapply(.SD, max), by = id_var, 
       .SDcols = c("ami", "stroke", "resp_fail", "resp_arr", "comp_diab")] %>%
-    fill_in_zeros(DT_id, "bene_id")
+    fill_in_zeros(DT_id, id_var)
   
   return(DT)
 }
@@ -87,7 +87,7 @@ create_prcdr_indicators <-  function(DT, DT_id, id_var) {
   DT %<>% 
     .[, lapply(.SD, max), by = id_var, 
       .SDcols = c("tube", "vent")] %>% 
-    fill_in_zeros(DT_id, "bene_id")
+    fill_in_zeros(DT_id, id_var)
   
   return(DT)
 }
