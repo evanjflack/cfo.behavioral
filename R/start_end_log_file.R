@@ -36,6 +36,15 @@ start_log_file <- function(file_name = NULL, log_file = TRUE, print = TRUE) {
       if (exists("resp_var")) {
         message("resp_var = ", resp_var)
       }
+      if (exists("id_strat")) {
+        message("id_strat = ", id_strat)
+      }
+      if (exists("population")) {
+        message("population = ", population)
+      }
+      if (exists("pred_cat")) {
+        message("pred_cat = ", pred_cat)
+      }
     }
   }
 }
@@ -58,5 +67,6 @@ end_log_file <- function() {
 }
 
 if(getRversion() >= "2.15.1") {
-  utils::globalVariables(c("pct", "first_year", "last_year", "resp_var"))
-} 
+  utils::globalVariables(c("pct", "first_year", "last_year", "resp_var", 
+                           "id_strat", "population", "pred_cat"))
+}
