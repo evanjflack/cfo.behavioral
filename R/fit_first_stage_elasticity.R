@@ -41,10 +41,15 @@ fit_first_stage_perc_change <- function(DT, y,  months = "1_12",
   form <- make_formula(y = "l_mean", x_main, x_int)
   
   dt_est <- data.table()
+  dtp <- data.table()
   for (j in months) {
     print(j)
     # Estimates
-    dt_est1 <- estimate_fs_perc_change(DT, y, month = j, x_main, x_int, form)
+    r_list <- estimate_fs_perc_change(DT, y, month = j, x_main, x_int, form)
+    dt_est1 <- r_list$dt_est
+    dtp1 <- r_list$dtp %>% 
+      .[, month := j]
+    dtp %<>% rbind(dtp1)
     # Standard errors
     dt_se1 <- bootstrap_fs_perc_change(DT, y, month = j, x_main, x_int, form, B)
     # labels
@@ -66,7 +71,8 @@ fit_first_stage_perc_change <- function(DT, y,  months = "1_12",
       .[, high_risk_abs := factor(high_risk_abs, labels = c("Low", "High"))]
   }
   
-  return(dt_est)
+  r_list <- list(dt_est = dt_est, dtp = dtp)
+  return(r_list)
 }
 
 #' Estimate First Stage
@@ -177,7 +183,9 @@ estimate_fs_perc_change <- function(DT, y, month, x_main, x_int, form) {
   
   dt_est <- fit_to_dt(fit_perc, x_main, x_int) %>% 
     .[, c(x_int, "estimate"), with = F]
-  return(dt_est)
+  
+  r_list <- list(dtp = dtp, dt_est = dt_est)
+  return(r_list)
 }
 
 bootstrap_fs_perc_change <- function(DT, y, month, x_main, x_int, form, B) {
