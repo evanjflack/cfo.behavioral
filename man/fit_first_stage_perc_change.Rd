@@ -21,8 +21,8 @@ fit_first_stage_perc_change(
 
 \item{y}{character vector, name of response variable(s) without months suffix}
 
-\item{months}{character vector (default = "1_12"), months of y variable to 
-estimate. Should be in the form "YEAR_MONTH" where year is between 1 and 2 
+\item{months}{character vector (default = "1_12"), months of y variable to
+estimate. Should be in the form "YEAR_MONTH" where year is between 1 and 2
 and month is between 1 and 12.}
 
 \item{x_main}{character (default = "first_mo"), name of instrument}
@@ -31,23 +31,23 @@ and month is between 1 and 12.}
 
 \item{keep_vars}{character vector, column names for the binary keep variables}
 
-\item{cont_risk_var}{character (default = NULL), name of the continuous 
+\item{cont_risk_var}{character (default = NULL), name of the continuous
 predicted risk variable}
 
-\item{n_quant}{integer (default = 5), number of quntiles to break predicted 
+\item{n_quant}{integer (default = 5), number of quntiles to break predicted
 risk in to. High risk is defined as being in the top quantile.}
 
-\item{B}{integer, number of bootstrap samples to use when calculating 
+\item{B}{integer, number of bootstrap samples to use when calculating
 standard errors}
 }
 \value{
-a data.table of the first stage estimates (and their standard errors) 
+a data.table of the first stage estimates (and their standard errors)
  in percentage terms by the specified interactions
- 
+
  @importFrom data.table data.table
 }
 \description{
-Estimate the first stage (y ~ first_mo), where y is a binary variable (e.g. 
- statin fill indiator) in terms of percentage change and bootstap the 
+Estimate the first stage (y ~ first_mo), where y is a binary variable (e.g.
+ statin fill indiator) in terms of percentage change and bootstap the
  standard errors
 }

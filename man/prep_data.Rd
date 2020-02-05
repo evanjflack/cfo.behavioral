@@ -13,13 +13,13 @@ prep_data(DT, keep_vars, cont_risk_var = NULL, n_quant = 5)
 
 \item{cont_risk_var}{character, name of continuous predicted risk variable}
 
-\item{n_quant}{interger, numer of quantiles to cut the contrinuous risk 
+\item{n_quant}{interger, numer of quantiles to cut the contrinuous risk
 variable in to. High risk is defined as the top quantile.}
 }
 \value{
 subsetted data.table with new variables
 }
 \description{
-Prep data for first stage estimation by subsettig based on binary "keep" 
+Prep data for first stage estimation by subsettig based on binary "keep"
  variables and defining "high_risk" if requested
 }
