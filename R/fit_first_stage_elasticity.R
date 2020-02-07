@@ -333,6 +333,8 @@ iterate_price <- function(DT, form,  price_change, B, price_var, x_main, x_int) 
 #' @param return_rxcui logical
 #' 
 #' @return data.table
+#' 
+#' @export
 fit_first_stage_price <- function(DT, keep_vars, cont_risk_var, 
                                        n_quant_risk, atc_codes, rxcui_xwalk, 
                                        price_by_drug, atc_ind, n_quant_price,
