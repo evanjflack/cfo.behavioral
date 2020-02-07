@@ -43,8 +43,6 @@ standard errors}
 \value{
 a data.table of the first stage estimates (and their standard errors)
  in percentage terms by the specified interactions
-
- @importFrom data.table data.table
 }
 \description{
 Estimate the first stage (y ~ first_mo), where y is a binary variable (e.g.

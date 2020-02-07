@@ -22,9 +22,9 @@
 #' @return a data.table of the first stage estimates (and their standard errors)
 #'  in percentage terms by the specified interactions
 #'
-#'  @importFrom data.table data.table
+#' @importFrom data.table data.table
 #' @importFrom stringr str_split_fixed
-#' @importFrom stats as.formula
+#' @importFrom stats as.formula median
 #'
 #' @export
 fit_first_stage_perc_change <- function(DT, y,  months = "1_12",
@@ -53,15 +53,15 @@ fit_first_stage_perc_change <- function(DT, y,  months = "1_12",
     }
     
     # Estimates
-    r_list <- estimate_fs_perc_change(DT_fit, y = paste0(y, "_", j), x_main, 
-                                      x_int, form)
+    r_list <- estimate_fs_perc_change(DT_fit, form, y = paste0(y, "_", j), x_main, 
+                                      x_int)
     dt_est1 <- r_list$dt_est
     dtp1 <- r_list$dtp %>%
       .[, month := j]
     dtp %<>% rbind(dtp1)
     # Standard errors
-    dt_se1 <- bootstrap_fs_perc_change(DT_fit, y = paste0(y, "_", j), 
-                                       x_main, x_int, form, B)
+    dt_se1 <- bootstrap_fs_perc_change(DT_fit, form = form, y = paste0(y, "_", j), 
+                                       x_main, x_int, B)
     # labels
     dt_est1 %<>%
       merge(dt_se1, by = x_int) %>%
@@ -181,7 +181,7 @@ make_formula <- function(y, x_main, x_int) {
   return(form)
 }
 
-estimate_fs_perc_change <- function(DT, y, x_main, x_int, form) {
+estimate_fs_perc_change <- function(DT, form, y, x_main, x_int) {
   var <- y
   DT[, y := get(paste0(var))]
   
@@ -197,7 +197,7 @@ estimate_fs_perc_change <- function(DT, y, x_main, x_int, form) {
   return(r_list)
 }
 
-bootstrap_fs_perc_change <- function(DT, y, x_main, x_int, form, B) {
+bootstrap_fs_perc_change <- function(DT, form, y, x_main, x_int, B) {
   dtp_boot <- data.table()
   var <- y
   for (i in 1:B) {
@@ -230,7 +230,150 @@ estimate_fs_raw <- function(DT, y, month, x_main, x_int, form) {
   return(dt_est)
 }
 
+#' Xwalk ATC4 to Generic RXCUI
+#' 
+#' Find all generic rxcui codes associated with a vector of atc codes
+#' 
+#' @param atc_codes character vector of atc code(s)
+#' @param rxcui_xwalk data.table with 2 columns lab_prod (9 digit ndc) and 
+#'  g_rxcui (the generic rxcui code)
+#' @param atc_ind data.table, xwalk between lab_prod and atc levels, atc levels
+#'  are indicators by column
+#'  
+#' @return character vector of all generic rxcui codes associated with the
+#'  given atc codes
+#'  
+return_g_rxcui <- function(atc_codes, rxcui_xwalk, atc_ind) {
+  rxcui_codes <- atc_ind %>% 
+    .[, c("lab_prod", atc_codes), with = F] %>% 
+    .[, any_code := rowSums(.SD), .SDcols = atc_codes] %>% 
+    .[any_code >= 1, ] %>% 
+    .[, .(lab_prod)] %>% 
+    merge(rxcui_xwalk, by = "lab_prod") %>% 
+    .[!is.na(g_rxcui), ] %>% 
+    .[, g_rxcui] %>% 
+    unique()
+  return(rxcui_codes)
+}
+
+#' Prep Price Data
+#' 
+#' @param price_by_drug data.table with average price and number of observations
+#'  by g_rxcu code/coverage arm. Columns should be named as follows: g_rxcui, 
+#'  arm, oop_cost, obs
+#' @param rxcui_codes character vector of g_rxcui code(s) of interest
+#' @param n_quant number of quantiles to cut the price variable into
+#' @param price_var price variable to use for cutting price into quantiles
+#' 
+#' @return data.table
+prep_price_data <- function(price_by_drug, rxcui_codes, n_quant, 
+                            price_var) {
+  price_change <- price_by_drug %>% 
+    .[g_rxcui %in% rxcui_codes] %>% 
+    dcast(g_rxcui ~ arm, value.var = c("oop_cost", "obs")) %>% 
+    .[, price_diff := oop_cost_gap - oop_cost_pre] %>% 
+    .[, price_perc_diff := price_diff/oop_cost_pre] %>% 
+    .[order(-obs_pre), ] %>% 
+    .[!is.na(price_diff), ] %>% 
+    .[order(-obs_pre), ] %>% 
+    .[, price_diff_cut := bin_variable(get(price_var), quant = n_quant)]
+  return(price_change)
+}
+
+iterate_price <- function(DT, form,  price_change, B, price_var, x_main, x_int) {
+  n_quant_price <- uniqueN(price_change$price_diff_cut)
+  dt_est <- data.table()
+  for (i in 1:n_quant_price) {
+    price_rxcui <- price_change[price_diff_cut == i, g_rxcui] %>% 
+      as.character() %>% 
+      paste0("g_rxcui_", .)
+    
+    price_lab_med <- median(price_change[price_diff_cut == i, get(price_var)])
+    price_lab_min <- min(price_change[price_diff_cut == i, get(price_var)])
+    price_lab_max <- max(price_change[price_diff_cut == i, get(price_var)])
+    
+    DT %<>% 
+      .[, fills := rowSums(.SD), .SDcols = price_rxcui] %>% 
+      .[, any_fill := ifelse(fills > 0, 1, 0)]
+    
+    
+    r_list <- estimate_fs_perc_change(DT, form, y = "any_fill", x_main, x_int)
+    dt_se <- bootstrap_fs_perc_change(DT, form, y = "any_fill", x_main, x_int, B = B)
+    dt_est1 <- r_list$dt_est %>% 
+      merge(dt_se, by = x_int) %>% 
+      .[, price := i] %>% 
+      .[, price_lab_med := price_lab_med] %>% 
+      .[, price_lab_min := price_lab_min] %>% 
+      .[, price_lab_max := price_lab_max]
+    
+    dt_est %<>% rbind(dt_est1)
+    
+  }
+  dt_est %<>% 
+    .[, lb := estimate - 1.96*se] %>% 
+    .[, ub := estimate + 1.86*se]
+  return(dt_est)
+}
+
+#' Fit first stage price
+#' @param DT data.table
+#' @param keep_vars character vector
+#' @param cont_risk_var character
+#' @param n_quant_risk integer
+#' @param atc_codes character vector
+#' @param rxcui_xwalk data.table
+#' @param price_by_drug data.table
+#' @param atc_ind data.table
+#' @param n_quant_price integer
+#' @param x_main chatacer
+#' @param x_int character vector
+#' @param price_var character
+#' @param B integer
+#' @param return_data logical 
+#' @param return_rxcui logical
+#' 
+#' @return data.table
+fit_first_stage_price <- function(DT, keep_vars, cont_risk_var, 
+                                       n_quant_risk, atc_codes, rxcui_xwalk, 
+                                       price_by_drug, atc_ind, n_quant_price,
+                                       x_main = "first_mo", 
+                                       x_int = c("pred_cut1", "hgih_risk_abs"), 
+                                       price_var, B = 100,
+                                       return_data = FALSE, 
+                                       return_rxcui = FALSE) {
+  
+  DT <- prep_fs_elasticity_data(DT = DT, 
+                                keep_vars = keep_vars, 
+                                cont_risk_var = cont_risk_var, 
+                                n_quant = n_quant_risk)
+  
+  rxcui_codes <- return_g_rxcui(atc_codes, rxcui_xwalk, atc_ind)
+  price_change <- prep_price_data(price_by_drug, rxcui_codes, n_quant_price, 
+                                  price_var)
+  
+  form <- make_formula(y = "l_mean", x_main, x_int)
+  
+  dtp_est <- iterate_price(DT, form = form, price_change, B = B, price_var, 
+                           x_int = x_int, x_main = x_main)
+  
+  if (return_data == FALSE & return_rxcui == FALSE) {
+    return(dtp_est)
+  } else if (return_data | return_rxcui) {
+    r_list <- list(dtp_est = dtp_est)
+    if (return_data) {
+      r_list$DT <- DT
+    }
+    if (return_rxcui) {
+      r_list$rxcui_codes <- rxcui_codes
+    }
+    return(r_list)
+  }
+}
+
 if(getRversion() >= "2.15.1") {
   utils::globalVariables(c("l_mean", "obs", "estimate", "variable", "month1",
-                           "se", "high_risk_abs", "risk_cut_abs"))
+                           "se", "high_risk_abs", "risk_cut_abs", "any_code", 
+                           "any_fill", "fills", "g_rxcui", "obs_pre", 
+                           "oop_cost", "price", "price_diff", "price_diff_cut", 
+                           "price_perc_diff", "oop_cost_gap", "oop_cost_pre"))
 }
