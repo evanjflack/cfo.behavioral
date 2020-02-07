@@ -31,27 +31,37 @@ fit_first_stage_perc_change <- function(DT, y,  months = "1_12",
                                         x_main = "first_mo", x_int = NULL,
                                         keep_vars, cont_risk_var = NULL,
                                         n_quant = 5, B = 10) {
-
+  
   # Prep Data
-  DT <- prep_data(DT, keep_vars, cont_risk_var, n_quant)
-
+  DT <- prep_fs_elasticity_data(DT, keep_vars, cont_risk_var, n_quant)
+  
   x_int <- c("pred_cut1", x_int)
-
+  
   # Make Formula
   form <- make_formula(y = "l_mean", x_main, x_int)
-
+  
   dt_est <- data.table()
   dtp <- data.table()
   for (j in months) {
     print(j)
+    
+    DT_fit <- copy(DT)
+    # Deal with people being alive
+    if (j != "1_12") {
+      DT_fit %<>% 
+        .[get(paste0("alive_", j)) == 1, ]
+    }
+    
     # Estimates
-    r_list <- estimate_fs_perc_change(DT, y, month = j, x_main, x_int, form)
+    r_list <- estimate_fs_perc_change(DT_fit, y = paste0(y, "_", j), x_main, 
+                                      x_int, form)
     dt_est1 <- r_list$dt_est
     dtp1 <- r_list$dtp %>%
       .[, month := j]
     dtp %<>% rbind(dtp1)
     # Standard errors
-    dt_se1 <- bootstrap_fs_perc_change(DT, y, month = j, x_main, x_int, form, B)
+    dt_se1 <- bootstrap_fs_perc_change(DT_fit, y = paste0(y, "_", j), 
+                                       x_main, x_int, form, B)
     # labels
     dt_est1 %<>%
       merge(dt_se1, by = x_int) %>%
@@ -64,13 +74,13 @@ fit_first_stage_perc_change <- function(DT, y,  months = "1_12",
   # Confidence intervals
   dt_est %<>%
     .[, `:=`(lb = estimate - 1.96*se, ub = estimate + 1.96*se)]
-
+  
   # labels
   if ("high_risk_abs" %in% x_int) {
     dt_est %<>%
       .[, high_risk_abs := factor(high_risk_abs, labels = c("Low", "High"))]
   }
-
+  
   r_list <- list(dt_est = dt_est, dtp = dtp)
   return(r_list)
 }
@@ -100,15 +110,15 @@ fit_first_stage_raw <- function(DT, y,  months = "1_12",
                                 x_main = "first_mo", x_int = NULL,
                                 keep_vars, cont_risk_var = NULL,
                                 n_quant = 5) {
-
+  
   # Prep Data
-  DT <- prep_data(DT, keep_vars, cont_risk_var, n_quant)
-
+  DT <- prep_fs_elasticity_data(DT, keep_vars, cont_risk_var, n_quant)
+  
   x_int <- c("pred_cut1", x_int)
-
+  
   # Make Formula
   form <- make_formula("y", x_main, x_int)
-
+  
   dt_est <- data.table()
   for (j in months) {
     print(j)
@@ -122,13 +132,13 @@ fit_first_stage_raw <- function(DT, y,  months = "1_12",
       .[, month1 := (year - 1)*12 + month]
     dt_est %<>% rbind(dt_est1)
   }
-
+  
   # Labels
   if ("high_risk_abs" %in% x_int) {
     dt_est %<>%
       .[, high_risk_abs := factor(high_risk_abs, labels = c("Low", "High"))]
   }
-
+  
   return(dt_est)
 }
 
@@ -146,7 +156,8 @@ fit_first_stage_raw <- function(DT, y,  months = "1_12",
 #' @return subsetted data.table with new variables
 #'
 #' @export
-prep_data <- function(DT, keep_vars, cont_risk_var = NULL, n_quant = 5) {
+prep_fs_elasticity_data <- function(DT, keep_vars, cont_risk_var = NULL, 
+                                    n_quant = 5) {
   # subet data based on specified "keep variables"
   for (i in keep_vars) {
     DT <- DT[get(i) == 1, ]
@@ -170,40 +181,32 @@ make_formula <- function(y, x_main, x_int) {
   return(form)
 }
 
-estimate_fs_perc_change <- function(DT, y, month, x_main, x_int, form) {
-  if (month != "1_12") {
-    DT %<>%
-      .[get(paste0("alive_", month)) == 1, ]
-  }
+estimate_fs_perc_change <- function(DT, y, x_main, x_int, form) {
   var <- y
-  DT[, y := get(paste0(var, "_", month))]
-
-  dtp <- calc_cmean(DT, paste0(var, "_", month), c(x_main, x_int), se = T) %>%
+  DT[, y := get(paste0(var))]
+  
+  dtp <- calc_cmean(DT, paste0(var), c(x_main, x_int), se = T) %>%
     .[, l_mean := log(mean)]
-
+  
   fit_perc <- lm(form, data = dtp, weights = obs)
-
+  
   dt_est <- fit_to_dt(fit_perc, x_main, x_int) %>%
     .[, c(x_int, "estimate"), with = F]
-
+  
   r_list <- list(dtp = dtp, dt_est = dt_est)
   return(r_list)
 }
 
-bootstrap_fs_perc_change <- function(DT, y, month, x_main, x_int, form, B) {
-  if (month != "1_12") {
-    DT %<>%
-      .[get(paste0("alive_", month)) == 1, ]
-  }
+bootstrap_fs_perc_change <- function(DT, y, x_main, x_int, form, B) {
   dtp_boot <- data.table()
   var <- y
   for (i in 1:B) {
     print(i)
     samp <- sample(1:nrow(DT), nrow(DT), replace = T)
     DT1 <- DT[samp, ]
-    dtp1 <- calc_cmean(DT1, paste0(var, "_", month), c(x_main, x_int), se = T) %>%
+    dtp1 <- calc_cmean(DT1, paste0(var), c(x_main, x_int), se = T) %>%
       .[, l_mean := log(mean)]
-
+    
     fit_perc1 <- lm(form, data = dtp1, weights = obs)
     dtp_boot1 <- fit_to_dt(fit_perc1, x_main, x_int) %>%
       .[, c(x_int, "estimate"), with = F]
@@ -220,9 +223,9 @@ estimate_fs_raw <- function(DT, y, month, x_main, x_int, form) {
   }
   var <- y
   DT[, y := get(paste0(var, "_", month))]
-
+  
   fit <- lm(form, data = DT)
-
+  
   dt_est <- fit_to_dt(fit, x_main, x_int)
   return(dt_est)
 }
