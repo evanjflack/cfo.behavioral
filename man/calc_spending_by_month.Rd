@@ -7,13 +7,15 @@
 calc_spending_by_month(DT, DT_id)
 }
 \arguments{
-\item{DT}{data.table with the columns bene_id, year, month, and cost}
+\item{DT}{data.table with the columns bene_id, year, month, cost, and 
+oop_cost}
 
 \item{DT_id, }{data.table with the column bene_id}
 }
 \value{
-data.table with 5 columns: bene_id, year, month, cost (spending in 
- that month), and cum_cost (total spending in that year, through that month)
+data.table with 7 columns: bene_id, year, month, cost (spending in 
+ that month), cum_cost (total spending in that year, through that month), 
+ oop_cost (oop spending in that month), and cum_oop_cost.
 }
 \description{
 Calculate New Enrollee Part D Spending by Month
