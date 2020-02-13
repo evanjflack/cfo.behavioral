@@ -4,7 +4,14 @@
 \alias{bin_variable}
 \title{Bin a numeric variable}
 \usage{
-bin_variable(x, min = NULL, max = NULL, int = NULL, quant = NULL)
+bin_variable(
+  x,
+  min = NULL,
+  max = NULL,
+  int = NULL,
+  quant = NULL,
+  center = FALSE
+)
 }
 \arguments{
 \item{x}{numeric vector, variable to binned}
@@ -15,7 +22,11 @@ bin_variable(x, min = NULL, max = NULL, int = NULL, quant = NULL)
 
 \item{int}{numeric, interval length of bins}
 
-\item{quant, }{interger, number of quantiles}
+\item{quant}{interger, number of quantiles}
+
+\item{center}{logical (default = FALSE), if TRUE then bins are centered 
+around seq(min, max, int), otherwise, min is right bound of the bottom bin 
+etc...}
 }
 \value{
 vector of bin labels
