@@ -15,3 +15,8 @@ calc_norm_perc <- function(DT, x1, x2) {
     .[, `:=`(N.x = NULL, N.y = NULL)]
   return(dt_norm_perc)
 }
+
+# Deal with R CMD check
+if(getRversion() >= "2.15.1") {
+  utils::globalVariables(c("N.x", "N.y", "norm_perc"))
+}
