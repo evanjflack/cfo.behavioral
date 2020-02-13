@@ -3,6 +3,7 @@
 export(bin_variable)
 export(calc_cmean)
 export(calc_initial_spending)
+export(calc_norm_perc)
 export(calc_spending_by_month)
 export(comb)
 export(create_diag_indicators)
