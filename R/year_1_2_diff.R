@@ -7,11 +7,13 @@
 #' @param grid data.table with combinations of jan/dec amounts
 #' @param year1_var character, name of the column of the year 1 usage amount
 #' @param year2_var character, name of the column of the year 2 usage amount
+#' @param x_main character, 
+#' @param x_int character vector, 
 #' 
 #' @return data.table with first stage estimates for each combination in grid
 #' 
 #' @export
-estimate_year_1_2_diff <- function(DT, grid, year1_var, year2_var) {
+estimate_year_1_2_diff <- function(DT, grid, year1_var, year2_var, x_main, x_int) {
   dt_fit <- data.table()
   for (i in 1:nrow(grid)) {
     print(i)
@@ -24,10 +26,11 @@ estimate_year_1_2_diff <- function(DT, grid, year1_var, year2_var) {
       .[y2 == grid_y2, ] %>%
       .[, y := ifelse(y1 == grid_y1, 1, 0)]
     
-    fit <- lm(y ~ first_mo:factor(pred_cut1) + factor(pred_cut1), 
-              data = DT_fit)
+    form <- make_formula("y", x_main, x_int)
     
-    dt_fit1 <- fit_to_dt(fit, "first_mo", c("pred_cut1", "high_risk_abs")) %>% 
+    fit <- lm(form, data = DT_fit)
+    
+    dt_fit1 <- fit_to_dt(fit, x_main, x_int) %>% 
       .[, paste0(year1_var) := grid_y1] %>% 
       .[, paste0(year2_var) := grid_y2]
     
@@ -47,6 +50,8 @@ estimate_year_1_2_diff <- function(DT, grid, year1_var, year2_var) {
 #' @param year2_var character, name of the column of the year 2 usage amount
 #' @param u_diff_var numeric vecotr with all unique amounts of the year 1/2 
 #'  difference
+#' @param x_main character, 
+#' @param x_int character vector, 
 #' @param exclude logical (default = TRUE), if TRUE, then excludes people with 
 #'  year 2 amoutns that are not compatible with the year 1 difference we are 
 #'  trying to estimate
@@ -55,6 +60,7 @@ estimate_year_1_2_diff <- function(DT, grid, year1_var, year2_var) {
 #' 
 #' @export
 estimate_year_1_2_diff_pooled <- function(DT, diff_var, year2_var, u_diff_var, 
+                                          x_main, x_int, 
                                          exclude = TRUE) {
   dt_fit <- data.table()
   for (i in u_diff_var) {
@@ -67,10 +73,12 @@ estimate_year_1_2_diff_pooled <- function(DT, diff_var, year2_var, u_diff_var,
     }
     DT_fit %<>% 
       .[, y := ifelse(get(diff_var) == i, 1, 0)]
-    fit <- lm(y ~ first_mo:factor(pred_cut1) + factor(pred_cut1), 
-              data = DT_fit)
     
-    dt_fit1 <- fit_to_dt(fit, "first_mo", c("pred_cut1")) %>% 
+    form <- make_formula("y", x_main, x_int)
+    
+    fit <- lm(form, data = DT_fit)
+  
+    dt_fit1 <- fit_to_dt(fit, x_main, x_int) %>% 
       .[, paste0(diff_var) := i]
     
     dt_fit %<>% rbind(dt_fit1)

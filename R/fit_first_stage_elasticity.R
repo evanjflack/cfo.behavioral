@@ -174,6 +174,15 @@ paste_factor <- function(x) {
   paste0("factor(", x, ")")
 }
 
+#' Make Formula
+#' 
+#' @param y character, name of the outcome variable
+#' @param x_main character, name of the instrument
+#' @param x_int character vector, name of the interaction variables
+#' 
+#' @return formlula
+#' 
+#' @export
 make_formula <- function(y, x_main, x_int) {
   int1 <- paste0(c(x_main, paste_factor(x_int)), collapse = ":")
   int2 <- paste0(paste_factor(x_int), collapse = "*")
