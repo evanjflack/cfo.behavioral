@@ -77,6 +77,8 @@ calc_initial_spending <- function(DT, DT_id, initial_days) {
 #' @param id_vars character vector, names of variables to aggregate on
 #' @param xwalk data.table with columns lab_prod as well as any indicators 
 #'  (usually atc1-4 or rxcui)
+#'  
+#' @export
 calc_spending_in_class <- function(DT, cost_var, DT_id, id_vars, xwalk) {
   DT_atc_cost <- DT %>% 
     merge(xwalk, by = "lab_prod")
@@ -91,8 +93,7 @@ calc_spending_in_class <- function(DT, cost_var, DT_id, id_vars, xwalk) {
   return(DT_atc_cost)
 }
 
-
 # Deal with R CMD check
 if(getRversion() >= "2.15.1") {
-  utils::globalVariables(c("bene_id", "lab_prod", "within_days"))
+  utils::globalVariables(c("bene_id", "lab_prod", "within_days", "..cost_var"))
 }
