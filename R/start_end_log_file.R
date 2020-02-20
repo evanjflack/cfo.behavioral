@@ -39,9 +39,6 @@ start_log_file <- function(file_name = NULL, log_file = TRUE, print = TRUE) {
       if (exists("id_strat")) {
         message("id_strat = ", id_strat)
       }
-      if (exists("population")) {
-        message("population = ", population)
-      }
       if (exists("pred_cat")) {
         message("pred_cat = ", pred_cat)
       }
