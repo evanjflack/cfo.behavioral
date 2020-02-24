@@ -99,12 +99,39 @@ calc_spending_in_class <- function(DT, cost_var, DT_id, id_vars, xwalk) {
   return(DT_atc_cost)
 }
 
-# Deal with R CMD check
-if(getRversion() >= "2.15.1") {
-  utils::globalVariables(c("bene_id", "lab_prod", "within_days", "..cost_var"))
+#' Calculate year 1/2 differences
+#' 
+#' @param DT data.table
+#' @param id_vars character vector, 
+#' @param time_var character
+#' @param year1_id character
+#' @param year2_id character=
+#' 
+#' @return data.table of year 1/2 differences
+#' 
+#' @export
+calc_year_1_2_diff <- function(DT, id_vars, time_var, year1_id, year2_id) {
+  
+  cast_formula <- paste(c(id_vars, "variable"), collapse = " + ") %>% 
+    paste("~", time_var) %>% 
+    as.formula()
+  
+  cast_formula2 <- paste(id_vars, collapse = " + ") %>% 
+    paste("~ variable")
+  
+  year_1_2_diff <- DT %>% 
+    melt(id.var = c(id_vars, time_var)) %>% 
+    dcast(cast_formula, value.var = "value") %>% 
+    setnames(c(year1_id, year2_id), c("value_1", "value_2")) %>% 
+    .[, diff := value_1 - value_2] %>% 
+    dcast(cast_formula2, value.var = "diff") %>%
+    setnames(names(.)[. %in% id_vars %>% not()], 
+             paste0(names(.)[. %in% id_vars %>% not()], "_diff"))
+  
 }
 
 # Deal with R CMD check
 if(getRversion() >= "2.15.1") {
-  utils::globalVariables(c("bene_id", "lab_prod", "within_days", "..cost_var"))
+  utils::globalVariables(c("bene_id", "lab_prod", "within_days", "..cost_var", 
+                           "value_1", "value_2"))
 }
