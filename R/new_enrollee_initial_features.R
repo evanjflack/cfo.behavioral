@@ -82,15 +82,26 @@ calc_initial_spending <- function(DT, DT_id, initial_days) {
 calc_spending_in_class <- function(DT, cost_var, DT_id, id_vars, xwalk) {
   DT_atc_cost <- DT %>% 
     merge(xwalk, by = "lab_prod")
+  
   atc_vars <- grep("atc", names(DT_atc_cost), value = T)
-  cost_vec <- unlist(DT_atc_cost[, ..cost_var])
+  cost_vec <- unlist(DT_atc_cost[, cost_var, with = FALSE])
   names(cost_vec) <- NULL
-  DT_atc_cost[, atc_vars] <- DT_atc_cost[, atc_vars, with = FALSE]*cost_vec
+  id_cols_DT <- DT_atc_cost[, id_vars, with = FALSE]
+  
   DT_atc_cost %<>% 
-    .[, lab_prod := NULL] %>% 
-    .[, lapply(.SD, max), by = id_vars, .SD = atc_vars] %>% 
+    .[, lapply(.SD, function(x) x*cost_vec), .SDcols = atc_vars] %>% 
+    cbind(id_cols_DT, .)
+  
+  DT_atc_cost %<>% 
+    .[, lapply(.SD, sum), by = id_vars, .SD = atc_vars] %>% 
     fill_in_zeros(DT_id, id_vars)
+  
   return(DT_atc_cost)
+}
+
+# Deal with R CMD check
+if(getRversion() >= "2.15.1") {
+  utils::globalVariables(c("bene_id", "lab_prod", "within_days", "..cost_var"))
 }
 
 # Deal with R CMD check
