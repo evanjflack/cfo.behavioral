@@ -4,12 +4,14 @@
 \alias{calc_initial_spending}
 \title{Calculate Initial Spending (New Enrollees)}
 \usage{
-calc_initial_spending(DT, DT_id, initial_days)
+calc_initial_spending(DT, DT_id, id_vars, initial_days)
 }
 \arguments{
 \item{DT}{data.table}
 
 \item{DT_id}{data.table}
+
+\item{id_vars}{character vector}
 
 \item{initial_days}{integer vector}
 }

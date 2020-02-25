@@ -4,12 +4,14 @@
 \alias{indicate_initial_atc}
 \title{Create Initial ATC Indicators (New Enrollees)}
 \usage{
-indicate_initial_atc(DT, DT_id, atc_ind, initial_days)
+indicate_initial_atc(DT, DT_id, id_vars, atc_ind, initial_days)
 }
 \arguments{
 \item{DT}{data.table}
 
 \item{DT_id}{data.table}
+
+\item{id_vars}{character string}
 
 \item{atc_ind}{data.table, lab_prod to atc indicator xwalk}
 

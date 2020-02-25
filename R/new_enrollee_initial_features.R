@@ -22,6 +22,7 @@ make_class_indicators <- function(DT, DT_id, id_vars, xwalk) {
 #' 
 #' @param DT data.table
 #' @param DT_id data.table
+#' @param id_vars character string
 #' @param atc_ind data.table, lab_prod to atc indicator xwalk
 #' @param initial_days integer
 #' 
@@ -30,16 +31,17 @@ make_class_indicators <- function(DT, DT_id, id_vars, xwalk) {
 #' @importFrom data.table data.table %between%
 #' 
 #' @export
-indicate_initial_atc <- function(DT, DT_id, atc_ind, initial_days) {
+indicate_initial_atc <- function(DT, DT_id, id_vars, atc_ind, initial_days) {
   # Subset to claims within initial days
   initial_DT <- DT %>%
     .[within_days %between% c(0, initial_days), ] %>%
-    .[, .(bene_id, lab_prod)]
+    .[, c(id_vars, "lab_prod")]
   
   # Merge with xwalk and aggregate
-  initial_atc <- make_class_indicators(initial_DT, DT_id, "bene_id", 
+  initial_atc <- make_class_indicators(DT = initial_DT, 
+                                       DT_id = DT_id, 
+                                       id_vars = id_vars, 
                                        xwalk = atc_ind)
-  
   return(initial_atc)
 }
 
@@ -47,12 +49,13 @@ indicate_initial_atc <- function(DT, DT_id, atc_ind, initial_days) {
 #' 
 #' @param DT data.table
 #' @param DT_id data.table
+#' @param id_vars character vector
 #' @param initial_days integer vector
 #' 
 #' @return data.table
 #' 
 #' @export
-calc_initial_spending <- function(DT, DT_id, initial_days) {
+calc_initial_spending <- function(DT, DT_id, id_vars, initial_days) {
   initial_spending <- DT %>% 
     .[within_days >= 0, ]
   for (i in initial_days) {
@@ -61,9 +64,9 @@ calc_initial_spending <- function(DT, DT_id, initial_days) {
                                                             cost, 0)]
   }
   initial_spending %<>%
-    .[, lapply(.SD, sum), by = .(bene_id),
+    .[, lapply(.SD, sum), by = id_vars,
       .SDcols = grep("initial_cost_", names(.))] %>% 
-    fill_in_zeros(DT_id[, .(bene_id)], "bene_id")
+    fill_in_zeros(DT_id, id_vars)
   
   return(initial_spending)
 }
