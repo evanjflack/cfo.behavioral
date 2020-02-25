@@ -35,7 +35,7 @@ indicate_initial_atc <- function(DT, DT_id, id_vars, atc_ind, initial_days) {
   # Subset to claims within initial days
   initial_DT <- DT %>%
     .[within_days %between% c(0, initial_days), ] %>%
-    .[, c(id_vars, "lab_prod")]
+    .[, c(id_vars, "lab_prod"), with = FALSE]
   
   # Merge with xwalk and aggregate
   initial_atc <- make_class_indicators(DT = initial_DT, 
