@@ -18,9 +18,13 @@
 #'  risk in to. High risk is defined as being in the top quantile.
 #' @param B integer, number of bootstrap samples to use when calculating
 #'  standard errors
+#' @param quiet logical (default = FALSE), if TRUE then does not print progress
 #'
-#' @return a data.table of the first stage estimates (and their standard errors)
-#'  in percentage terms by the specified interactions
+#' @return List with 2 elements:
+#' \item{dt_est}{a data.table of the first stage estimates (and their standard 
+#'               errors) in percentage terms by the specified interactions}
+#' \item{dtp}{a data.table with the conditional means of y by enrollment month, 
+#'            spending bin, any any other x_int}
 #'
 #' @importFrom data.table data.table
 #' @importFrom stringr str_split_fixed
@@ -30,7 +34,7 @@
 fit_first_stage_perc_change <- function(DT, y,  months = "1_12",
                                         x_main = "first_mo", x_int = NULL,
                                         keep_vars, cont_risk_var = NULL,
-                                        n_quant = 5, B = 10) {
+                                        n_quant = 5, B = 10, quiet = FALSE) {
   
   # Prep Data
   DT <- prep_fs_elasticity_data(DT, keep_vars, cont_risk_var, n_quant)
@@ -43,8 +47,9 @@ fit_first_stage_perc_change <- function(DT, y,  months = "1_12",
   dt_est <- data.table()
   dtp <- data.table()
   for (j in months) {
-    print(j)
-    
+    if (quiet == FALSE) {
+      print(j)
+    }
     DT_fit <- copy(DT)
     # Deal with people being alive
     if (j != "1_12") {
@@ -61,7 +66,7 @@ fit_first_stage_perc_change <- function(DT, y,  months = "1_12",
     dtp %<>% rbind(dtp1)
     # Standard errors
     dt_se1 <- bootstrap_fs_perc_change(DT_fit, form = form, y = paste0(y, "_", j), 
-                                       x_main, x_int, B)
+                                       x_main, x_int, B, quiet = quiet)
     # labels
     dt_est1 %<>%
       merge(dt_se1, by = x_int) %>%
@@ -90,26 +95,15 @@ fit_first_stage_perc_change <- function(DT, y,  months = "1_12",
 #' Estimate the first stage (y ~ first_mo), where y is a binary variable (e.g.
 #'  statin fill indiator) in gross terms
 #'
-#' @param DT a data.table
-#' @param y character vector, name of response variable(s) without months suffix
-#' @param months character vector (default = "1_12"), months of y variable to
-#'  estimate. Should be in the form "YEAR_MONTH" where year is between 1 and 2
-#'  and month is between 1 and 12.
-#' @param x_main character (default = "first_mo"), name of instrument
-#' @param x_int character vector, names of variables to interact instrument with
-#' @param keep_vars character vector, column names for the binary keep variables
-#' @param cont_risk_var character (default = NULL), name of the continuous
-#'  predicted risk variable
-#' @param n_quant integer (default = 5), number of quntiles to break predicted
-#'  risk in to. High risk is defined as being in the top quantile.
-#'
+#' @inheritParams fit_first_stage_perc_change
+#' 
 #' @return a data.table of the first stage estimates (and their standard errors)
 #'
 #' @export
 fit_first_stage_raw <- function(DT, y,  months = "1_12",
                                 x_main = "first_mo", x_int = NULL,
                                 keep_vars, cont_risk_var = NULL,
-                                n_quant = 5) {
+                                n_quant = 5, quiet = FALSE) {
   
   # Prep Data
   DT <- prep_fs_elasticity_data(DT, keep_vars, cont_risk_var, n_quant)
@@ -121,7 +115,9 @@ fit_first_stage_raw <- function(DT, y,  months = "1_12",
   
   dt_est <- data.table()
   for (j in months) {
-    print(j)
+    if (quiet == FALSE) {
+      print(j)
+    }
     # Estimates
     dt_est1 <- estimate_fs_raw(DT, y, month = j, x_main, x_int, form)
     # Labels
@@ -147,11 +143,7 @@ fit_first_stage_raw <- function(DT, y,  months = "1_12",
 #' Prep data for first stage estimation by subsettig based on binary "keep"
 #'  variables and defining "high_risk" if requested
 #'
-#' @param DT a data.table
-#' @param keep_vars character vector, column names of binary keep variables
-#' @param cont_risk_var character, name of continuous predicted risk variable
-#' @param n_quant interger, numer of quantiles to cut the contrinuous risk
-#'  variable in to. High risk is defined as the top quantile.
+#' @inheritParams fit_first_stage_perc_change
 #'
 #' @return subsetted data.table with new variables
 #'
@@ -170,17 +162,20 @@ prep_fs_elasticity_data <- function(DT, keep_vars, cont_risk_var = NULL,
   return(DT)
 }
 
+#' Make a variable a factor for a formula
+#' 
+#' @param x string, name of variable in data.table
+#' 
+#' @return string, "factor(x)"
 paste_factor <- function(x) {
   paste0("factor(", x, ")")
 }
 
 #' Make Formula
 #' 
-#' @param y character, name of the outcome variable
-#' @param x_main character, name of the instrument
-#' @param x_int character vector, name of the interaction variables
+#' Make formula for the first stage estimation
 #' 
-#' @return formlula
+#' @inheritParams fit_first_stage_perc_change
 #' 
 #' @export
 make_formula <- function(y, x_main, x_int) {
@@ -190,6 +185,12 @@ make_formula <- function(y, x_main, x_int) {
   return(form)
 }
 
+#' Estimate FS Coefficient (Percentage Change)
+#' 
+#' @inheritParams fit_first_stage_perc_change
+#' @param form first stage formula
+#' 
+#' @return List woth two elements
 estimate_fs_perc_change <- function(DT, form, y, x_main, x_int) {
   var <- y
   DT[, y := get(paste0(var))]
@@ -206,11 +207,20 @@ estimate_fs_perc_change <- function(DT, form, y, x_main, x_int) {
   return(r_list)
 }
 
-bootstrap_fs_perc_change <- function(DT, form, y, x_main, x_int, B) {
+#' Bootstrap SE Percentage Change Models
+#' 
+#' @inheritParams fit_first_stage_perc_change
+#' @param form fomula, first stage formula
+#' 
+#' @return data.table with standard errors
+bootstrap_fs_perc_change <- function(DT, form, y, x_main, x_int, B, 
+                                     quiet) {
   dtp_boot <- data.table()
   var <- y
   for (i in 1:B) {
-    print(i)
+    if (quiet == FALSE) {
+      print(i)
+    }
     samp <- sample(1:nrow(DT), nrow(DT), replace = T)
     DT1 <- DT[samp, ]
     dtp1 <- calc_cmean(DT1, paste0(var), c(x_main, x_int), se = T) %>%
@@ -225,6 +235,12 @@ bootstrap_fs_perc_change <- function(DT, form, y, x_main, x_int, B) {
   return(dt_se)
 }
 
+#' Estimate First Stage Coefficients
+#' 
+#' @inheritParams estimate_fs_perc_change
+#' @param month character, month of analysis (in form "year_month")
+#' 
+#' @return data.table with first stage estimates and standard errors
 estimate_fs_raw <- function(DT, y, month, x_main, x_int, form) {
   if (month != "1_12") {
     DT %<>%
@@ -251,7 +267,6 @@ estimate_fs_raw <- function(DT, y, month, x_main, x_int, form) {
 #'  
 #' @return character vector of all generic rxcui codes associated with the
 #'  given atc codes
-#'  
 return_g_rxcui <- function(atc_codes, rxcui_xwalk, atc_ind) {
   rxcui_codes <- atc_ind %>% 
     .[, c("lab_prod", atc_codes), with = F] %>% 
@@ -289,7 +304,19 @@ prep_price_data <- function(price_by_drug, rxcui_codes, n_quant,
   return(price_change)
 }
 
-iterate_price <- function(DT, form,  price_change, B, price_var, x_main, x_int) {
+#' Iterate Price
+#' 
+#' Iterate through different priced drugs in first stage percentage change 
+#'  estimation
+#' 
+#' @inheritParams fit_first_stage_perc_change
+#' @param price_var character, name of price variable
+#' @param price_change data.table of price changes by drugs
+#' @param form formula, first stage formula
+#' 
+#' @return data.table of first stage estimates by price of drug
+iterate_price <- function(DT, form,  price_change, B, price_var, x_main, x_int, 
+                          quiet) {
   n_quant_price <- uniqueN(price_change$price_diff_cut)
   dt_est <- data.table()
   for (i in 1:n_quant_price) {
@@ -307,7 +334,8 @@ iterate_price <- function(DT, form,  price_change, B, price_var, x_main, x_int) 
     
     
     r_list <- estimate_fs_perc_change(DT, form, y = "any_fill", x_main, x_int)
-    dt_se <- bootstrap_fs_perc_change(DT, form, y = "any_fill", x_main, x_int, B = B)
+    dt_se <- bootstrap_fs_perc_change(DT, form, y = "any_fill", x_main, x_int, 
+                                      B = B, quiet = quiet)
     dt_est1 <- r_list$dt_est %>% 
       merge(dt_se, by = x_int) %>% 
       .[, price := i] %>% 
@@ -325,19 +353,15 @@ iterate_price <- function(DT, form,  price_change, B, price_var, x_main, x_int) 
 }
 
 #' Fit first stage price
-#' @param DT data.table
-#' @param keep_vars character vector
-#' @param cont_risk_var character
-#' @param n_quant_risk integer
+#' @inheritParams fit_first_stage_perc_change
 #' @param atc_codes character vector
 #' @param rxcui_xwalk data.table
 #' @param price_by_drug data.table
 #' @param atc_ind data.table
 #' @param n_quant_price integer
-#' @param x_main chatacer
-#' @param x_int character vector
+#' @param n_quant_risk integer, number of quantiles to break predicted risk
+#'  in to
 #' @param price_var character
-#' @param B integer
 #' @param return_data logical 
 #' @param return_rxcui logical
 #' 
@@ -345,13 +369,14 @@ iterate_price <- function(DT, form,  price_change, B, price_var, x_main, x_int) 
 #' 
 #' @export
 fit_first_stage_price <- function(DT, keep_vars, cont_risk_var, 
-                                       n_quant_risk, atc_codes, rxcui_xwalk, 
-                                       price_by_drug, atc_ind, n_quant_price,
-                                       x_main = "first_mo", 
-                                       x_int = c("pred_cut1", "hgih_risk_abs"), 
-                                       price_var, B = 100,
-                                       return_data = FALSE, 
-                                       return_rxcui = FALSE) {
+                                  n_quant_risk, atc_codes, rxcui_xwalk, 
+                                  price_by_drug, atc_ind, n_quant_price,
+                                  x_main = "first_mo", 
+                                  x_int = c("pred_cut1", "hgih_risk_abs"), 
+                                  price_var, B = 100,
+                                  return_data = FALSE, 
+                                  return_rxcui = FALSE, 
+                                  quiet = FALSE) {
   
   DT <- prep_fs_elasticity_data(DT = DT, 
                                 keep_vars = keep_vars, 
@@ -365,7 +390,8 @@ fit_first_stage_price <- function(DT, keep_vars, cont_risk_var,
   form <- make_formula(y = "l_mean", x_main, x_int)
   
   dtp_est <- iterate_price(DT, form = form, price_change, B = B, price_var, 
-                           x_int = x_int, x_main = x_main)
+                           x_int = x_int, x_main = x_main, 
+                           quiet = quiet)
   
   if (return_data == FALSE & return_rxcui == FALSE) {
     return(dtp_est)

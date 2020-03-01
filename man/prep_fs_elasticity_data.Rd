@@ -9,12 +9,13 @@ prep_fs_elasticity_data(DT, keep_vars, cont_risk_var = NULL, n_quant = 5)
 \arguments{
 \item{DT}{a data.table}
 
-\item{keep_vars}{character vector, column names of binary keep variables}
+\item{keep_vars}{character vector, column names for the binary keep variables}
 
-\item{cont_risk_var}{character, name of continuous predicted risk variable}
+\item{cont_risk_var}{character (default = NULL), name of the continuous
+predicted risk variable}
 
-\item{n_quant}{interger, numer of quantiles to cut the contrinuous risk
-variable in to. High risk is defined as the top quantile.}
+\item{n_quant}{integer (default = 5), number of quntiles to break predicted
+risk in to. High risk is defined as being in the top quantile.}
 }
 \value{
 subsetted data.table with new variables

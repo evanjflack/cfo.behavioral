@@ -12,7 +12,8 @@ fit_first_stage_raw(
   x_int = NULL,
   keep_vars,
   cont_risk_var = NULL,
-  n_quant = 5
+  n_quant = 5,
+  quiet = FALSE
 )
 }
 \arguments{
@@ -35,6 +36,8 @@ predicted risk variable}
 
 \item{n_quant}{integer (default = 5), number of quntiles to break predicted
 risk in to. High risk is defined as being in the top quantile.}
+
+\item{quiet}{logical (default = FALSE), if TRUE then does not print progress}
 }
 \value{
 a data.table of the first stage estimates (and their standard errors)

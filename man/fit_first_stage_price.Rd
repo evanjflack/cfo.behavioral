@@ -19,17 +19,20 @@ fit_first_stage_price(
   price_var,
   B = 100,
   return_data = FALSE,
-  return_rxcui = FALSE
+  return_rxcui = FALSE,
+  quiet = FALSE
 )
 }
 \arguments{
-\item{DT}{data.table}
+\item{DT}{a data.table}
 
-\item{keep_vars}{character vector}
+\item{keep_vars}{character vector, column names for the binary keep variables}
 
-\item{cont_risk_var}{character}
+\item{cont_risk_var}{character (default = NULL), name of the continuous
+predicted risk variable}
 
-\item{n_quant_risk}{integer}
+\item{n_quant_risk}{integer, number of quantiles to break predicted risk
+in to}
 
 \item{atc_codes}{character vector}
 
@@ -41,17 +44,20 @@ fit_first_stage_price(
 
 \item{n_quant_price}{integer}
 
-\item{x_main}{chatacer}
+\item{x_main}{character (default = "first_mo"), name of instrument}
 
-\item{x_int}{character vector}
+\item{x_int}{character vector, names of variables to interact instrument with}
 
 \item{price_var}{character}
 
-\item{B}{integer}
+\item{B}{integer, number of bootstrap samples to use when calculating
+standard errors}
 
 \item{return_data}{logical}
 
 \item{return_rxcui}{logical}
+
+\item{quiet}{logical (default = FALSE), if TRUE then does not print progress}
 }
 \value{
 data.table
