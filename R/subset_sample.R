@@ -8,6 +8,10 @@
 #' @param inst chatacter, name of instrument to check balance on
 #' 
 #' @return a list with three elements
+#' \item{DT_subset}{Subsetted data.table}
+#' \item{obs}{data.table with observations at each subsetting step}
+#' \item{dt_bal}{data.table with first stage on balance variables at each 
+#'               subset}
 #' 
 #' @importFrom stats lm
 #' @importFrom data.table copy uniqueN data.table

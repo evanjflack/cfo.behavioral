@@ -2,7 +2,7 @@
 % Please edit documentation in R/create_mortality_outcomes.R
 \name{create_mortality_outcomes}
 \alias{create_mortality_outcomes}
-\title{Creat Mortality Outcomes}
+\title{Creat New Enrollee Mortality Outcomes}
 \usage{
 create_mortality_outcomes(
   DT_deaths,
@@ -29,5 +29,5 @@ a data.table with bene_id, and indicators for cumulative mortality
  and mortality hazard.
 }
 \description{
-Creat Mortality Outcomes
+Creat New Enrollee Mortality Outcomes
 }

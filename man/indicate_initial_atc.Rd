@@ -7,18 +7,19 @@
 indicate_initial_atc(DT, DT_id, id_vars, atc_ind, initial_days)
 }
 \arguments{
-\item{DT}{data.table}
+\item{DT}{data.table with all elements of id_vars as well as lab_prod}
 
-\item{DT_id}{data.table}
+\item{DT_id}{data.table data.table with all elements of id_vars}
 
-\item{id_vars}{character string}
+\item{id_vars}{character vector, names of variables to aggregate on}
 
 \item{atc_ind}{data.table, lab_prod to atc indicator xwalk}
 
-\item{initial_days}{integer}
+\item{initial_days}{integer, maximum number of days to use from enrollment}
 }
 \value{
-data.table
+data.table with atc class indicators from from enrollment through 
+ initial days
 }
 \description{
 Create Initial ATC Indicators (New Enrollees)

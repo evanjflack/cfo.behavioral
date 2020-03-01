@@ -1,5 +1,7 @@
 #' Unpack IP Claims
 #' 
+#' Reformats ip claims diagnosis and procedure codes to long
+#' 
 #' @param ip data.table of inpatient claims with the columns bene_id, clm_id,
 #'  from_dt, and dgnscd1
 #' @param num_prcdr integer (1-6), number of procedure codes to use

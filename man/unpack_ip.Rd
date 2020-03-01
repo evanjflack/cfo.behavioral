@@ -18,5 +18,5 @@ list with 2 elements
 \item{ip_prcdr}{data.table of ip prcedures}
 }
 \description{
-Unpack IP Claims
+Reformats ip claims diagnosis and procedure codes to long
 }

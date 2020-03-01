@@ -1,6 +1,6 @@
 #' Combine multiple years of data into one data.table
 #' 
-#' @param lib_base_data the base directory for data
+#' @param lib_base_data character, the base directory for data
 #' @param file base file name
 #' @param years vecotor of years
 #' @param pct string, sample percentage

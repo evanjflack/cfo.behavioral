@@ -1,4 +1,4 @@
-#' Creat Mortality Outcomes
+#' Creat New Enrollee Mortality Outcomes
 #' 
 #' @param DT_deaths data.table with bene_id, and from_days
 #' @param DT_id data table with bene_id

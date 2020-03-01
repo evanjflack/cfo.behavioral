@@ -9,18 +9,20 @@ calibrate_risk(DT, keep_vars, cont_risk_var, n_quant, event_var, treated_var)
 \arguments{
 \item{DT}{data.table}
 
-\item{keep_vars}{character vector}
+\item{keep_vars}{character vector, names of subsetting variables}
 
-\item{cont_risk_var}{character}
+\item{cont_risk_var}{character, name of contrinuous risk prediction variable}
 
-\item{n_quant}{interger}
+\item{n_quant}{interger, number of quantiles to break cont_risk_var in to}
 
-\item{event_var}{character}
+\item{event_var}{character, name of the realized event variable (e.g. "ami")}
 
-\item{treated_var}{character}
+\item{treated_var}{character, name of the binary treatment indicator 
+variable}
 }
 \value{
-data.table
+data.table with realized event rate by treatment status and predicted
+ risk quantile
 }
 \description{
 Calibrate Acute Event Prediction

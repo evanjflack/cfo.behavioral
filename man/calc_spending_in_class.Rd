@@ -7,8 +7,7 @@
 calc_spending_in_class(DT, cost_var, DT_id, id_vars, xwalk)
 }
 \arguments{
-\item{DT}{data.table with all elements of id_vars as well as lab_prod and 
-cost_var}
+\item{DT}{data.table with all elements of id_vars as well as lab_prod}
 
 \item{cost_var}{character, name of the cost variable to use}
 

@@ -1,8 +1,8 @@
 #' Reseahpe wide data from BSF file to long
 #' 
-#' @param DT data.table
-#' @param id_vars string vector of id column name(s)
-#' @param reshape_vars string vector, names of variables to reshape to long
+#' @param DT data.table with id_vars
+#' @param id_vars character vector of id column name(s)
+#' @param reshape_vars character vector, names of variables to reshape to long
 #' @param value_name name for the new long variable
 #' 
 #' @return long data.table

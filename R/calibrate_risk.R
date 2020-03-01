@@ -1,13 +1,15 @@
 #' Calibrate Acute Event Prediction
 #' 
 #' @param DT data.table
-#' @param keep_vars character vector
-#' @param cont_risk_var character
-#' @param n_quant interger
-#' @param event_var character
-#' @param treated_var character
+#' @param keep_vars character vector, names of subsetting variables
+#' @param cont_risk_var character, name of contrinuous risk prediction variable
+#' @param n_quant interger, number of quantiles to break cont_risk_var in to
+#' @param event_var character, name of the realized event variable (e.g. "ami")
+#' @param treated_var character, name of the binary treatment indicator 
+#'  variable
 #' 
-#' @return data.table
+#' @return data.table with realized event rate by treatment status and predicted
+#'  risk quantile
 #' 
 #' @export
 calibrate_risk <- function(DT, keep_vars, cont_risk_var, n_quant, event_var, 

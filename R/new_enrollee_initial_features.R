@@ -20,13 +20,12 @@ make_class_indicators <- function(DT, DT_id, id_vars, xwalk) {
 
 #' Create Initial ATC Indicators (New Enrollees)
 #' 
-#' @param DT data.table
-#' @param DT_id data.table
-#' @param id_vars character string
+#' @inheritParams make_class_indicators
 #' @param atc_ind data.table, lab_prod to atc indicator xwalk
-#' @param initial_days integer
+#' @param initial_days integer, maximum number of days to use from enrollment
 #' 
-#' @return data.table
+#' @return data.table with atc class indicators from from enrollment through 
+#'  initial days
 #' 
 #' @importFrom data.table data.table %between%
 #' 
@@ -47,10 +46,7 @@ indicate_initial_atc <- function(DT, DT_id, id_vars, atc_ind, initial_days) {
 
 #' Calculate Initial Spending (New Enrollees)
 #' 
-#' @param DT data.table
-#' @param DT_id data.table
-#' @param id_vars character vector
-#' @param initial_days integer vector
+#' @inheritParams indicate_initial_atc
 #' 
 #' @return data.table
 #' 
@@ -73,13 +69,8 @@ calc_initial_spending <- function(DT, DT_id, id_vars, initial_days) {
 
 #' Calculate Spending within a Class
 #' 
-#' @param DT data.table with all elements of id_vars as well as lab_prod and 
-#'  cost_var
+#' @inheritParams make_class_indicators
 #' @param cost_var character, name of the cost variable to use
-#' @param DT_id data.table data.table with all elements of id_vars
-#' @param id_vars character vector, names of variables to aggregate on
-#' @param xwalk data.table with columns lab_prod as well as any indicators 
-#'  (usually atc1-4 or rxcui)
 #'  
 #' @export
 calc_spending_in_class <- function(DT, cost_var, DT_id, id_vars, xwalk) {
@@ -104,11 +95,12 @@ calc_spending_in_class <- function(DT, cost_var, DT_id, id_vars, xwalk) {
 
 #' Calculate year 1/2 differences
 #' 
-#' @param DT data.table
-#' @param id_vars character vector, 
-#' @param time_var character
-#' @param year1_id character
-#' @param year2_id character=
+#' @param DT data.table with id_vars, time_var, and year 1/2 utilization 
+#'  variables
+#' @param id_vars character vector, names of id variables
+#' @param time_var character, name of time variable
+#' @param year1_id character, value of time_var for year 1 observations
+#' @param year2_id character, value of time_var for year 2 observations
 #' 
 #' @return data.table of year 1/2 differences
 #' 

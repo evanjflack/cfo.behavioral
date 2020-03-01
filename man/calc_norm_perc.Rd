@@ -14,8 +14,9 @@ calc_norm_perc(DT, x1, x2)
 \item{x2}{character vector, the variables you want to normalize by}
 }
 \value{
-data.table of normalized perctages
+data.table of normalized perctages by group
 }
 \description{
-Calculate normalized percentage
+Calculate the normalized percentage of observations in a particular group 
+ (e.g. spending bin) within a larger group (e.g. enrollment month)
 }

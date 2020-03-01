@@ -354,16 +354,17 @@ iterate_price <- function(DT, form,  price_change, B, price_var, x_main, x_int,
 
 #' Fit first stage price
 #' @inheritParams fit_first_stage_perc_change
-#' @param atc_codes character vector
-#' @param rxcui_xwalk data.table
-#' @param price_by_drug data.table
-#' @param atc_ind data.table
-#' @param n_quant_price integer
+#' @param atc_codes character vector, atc codes to run models on
+#' @param rxcui_xwalk data.table, xwalk of atc code to rxcui
+#' @param price_by_drug data.table, prices by drug and coverage arm
+#' @param atc_ind data.table, atc indicators for rxcui codes
+#' @param n_quant_price integer, number of quantiles to break price in to
 #' @param n_quant_risk integer, number of quantiles to break predicted risk
 #'  in to
-#' @param price_var character
-#' @param return_data logical 
-#' @param return_rxcui logical
+#' @param price_var character, name of price variable to use
+#' @param return_data logical (default = FALSE), if TRUE returns model data
+#' @param return_rxcui logical (default = TRUE), if TRUE then returns vector
+#'  of rxcui codes that were sued in estimation. 
 #' 
 #' @return data.table
 #' 

@@ -7,15 +7,16 @@
 calc_year_1_2_diff(DT, id_vars, time_var, year1_id, year2_id)
 }
 \arguments{
-\item{DT}{data.table}
+\item{DT}{data.table with id_vars, time_var, and year 1/2 utilization 
+variables}
 
-\item{id_vars}{character vector,}
+\item{id_vars}{character vector, names of id variables}
 
-\item{time_var}{character}
+\item{time_var}{character, name of time variable}
 
-\item{year1_id}{character}
+\item{year1_id}{character, value of time_var for year 1 observations}
 
-\item{year2_id}{character=}
+\item{year2_id}{character, value of time_var for year 2 observations}
 }
 \value{
 data.table of year 1/2 differences
