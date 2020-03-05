@@ -24,9 +24,12 @@ treated_var}
 variable}
 }
 \value{
-data.table with realized event rate by treatment status and predicted
- risk quantile
+data.table with following columns: 
+\item{treated}{indicator for initial period treatment} 
+\item{risk}{quantile of predicted risk}
+\item{mean}{realized event rate}
 }
 \description{
-Calibrate Acute Event Prediction
+calibrate_risk() is a function that calculates the actual event rate of acute
+ events by predicted risk quantile and initial period treatment status.
 }

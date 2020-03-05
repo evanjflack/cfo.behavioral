@@ -1,13 +1,22 @@
-#' Format linear fit output as a data.table
+#' Format (specific) linear fit output as a data.table
 #' 
-#' fit_to_dt() is a function that converts the results of a model into a 
-#'  data.table with easily manipulable columns of interaction labels.
+#' fit_to_dt() is a function that converts the results of a linear model with 
+#'  one continuous regressor of interest (e.g. first_mo) that is interacted with 
+#'  factor variable (e.g. risk_cut) to a data.table with easily manipulable 
+#'  columns of interaction labels. This is useful for plotting the results of 
+#'  the elasticty by risk models.
 #'  
-#' @param fit the linear fit (usually lm, lm_robust, or iv_robust)
-#' @param primary the vaiable name of the rimary coefficient
-#' @param interacts names of the interaction variables (factors)
+#' @param fit the linear fit (usually lm, lm_robust, or iv_robust). The fit must
+#'  be specified to estimate the coefficient on the continuous variable for all 
+#'  levels of interactions (e.g. atc4_C10AA ~ first_mo:factor(pred_cut) + 
+#'  factor(pred_cut))
+#' @param primary character, the vaiable name of the continuous regressor of 
+#'  interest (usually first_mo)
+#' @param interacts character vector, names of the interaction variables 
+#'  (factors)
 #' 
-#' @return data.table with all coefficients of primary variable
+#' @return data.table with the estiated coefficients of the primary variable
+#'  for each interction combination (along with SEs and CIs).
 #' 
 #' @examples 
 #' DT <- as.data.table(mtcars)

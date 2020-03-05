@@ -1,14 +1,18 @@
 #' Creat New Enrollee Mortality Outcomes
 #' 
-#' @param DT_deaths data.table with bene_id, and from_days
+#' @param DT_deaths data.table with bene_id, and from_days (days from specified
+#'  starting point until death)
 #' @param DT_id data table with bene_id
 #' @param start_day integer (default = 0), when to start counting outcomes from
 #' @param int integer (default = 30), length of mortality intervals
 #' @param int_num interger (default = 12), number of intervals to iterate 
 #'  through
 #'
-#' @return a data.table with bene_id, and indicators for cumulative mortality 
-#'  and mortality hazard.
+#' @return a data.table with the following colums: 
+#' \item{bene_id}
+#' \item{mort_X}{Indicator for mortality from start day to X days, e.g. mort_30}
+#' \item{mort_X_Y}{Indicator for mortality between X and Y days, e.g. 
+#'                 mort_30_60}
 #'  
 #' @export
 create_mortality_outcomes <- function(DT_deaths, DT_id = "pde_benes", 
