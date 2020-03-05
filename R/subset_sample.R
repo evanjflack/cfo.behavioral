@@ -37,8 +37,8 @@ subset_sample <- function(DT, subset_vars, progress = F, balance_vars = NULL,
       dt_fit %<>% rbind(dt_fit1)
     }
   }
-  return_list <- list(DT_subset = DT_subset, obs = obs, dt_bal = dt_fit)
   print(obs)
+  return_list <- list(DT_subset = DT_subset, obs = obs, dt_bal = dt_fit)
   return(return_list)
 }
 
