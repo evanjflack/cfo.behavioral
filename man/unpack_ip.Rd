@@ -2,7 +2,7 @@
 % Please edit documentation in R/acute_event_outcomes.R
 \name{unpack_ip}
 \alias{unpack_ip}
-\title{Unpack IP Claims}
+\title{Unpack IP Claims (Acute Outcomes)}
 \usage{
 unpack_ip(ip, num_prcdr)
 }
@@ -18,5 +18,6 @@ list with 2 elements
 \item{ip_prcdr}{data.table of ip prcedures}
 }
 \description{
-Reformats ip claims diagnosis and procedure codes to long
+Reformats ip claims diagnosis and procedure codes from wide to long. Used for
+generating acute outcome variables.
 }

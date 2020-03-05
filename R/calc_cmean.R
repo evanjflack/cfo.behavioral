@@ -4,12 +4,12 @@
 #'  standard errors and confidence intervals) by group.
 #'
 #' @param DT a data.table
-#' @param y a character vector of column names of data to calculate the group mean
-#'  of
+#' @param y a character vector of column names of data to calculate the group 
+#'  mean of
 #' @param x a character vector of columns in data to group by
-#' @param se logical, if TRUE output will calculate standard error and confidence
-#'  intervals of mean alng with  number of observations of conditional sample
-#' mean
+#' @param se logical, if TRUE output will calculate standard error and 
+#'  confidence intervals of mean alng with  number of observations of 
+#'  conditional sample mean
 #'
 #' @examples
 #' library(data.table)

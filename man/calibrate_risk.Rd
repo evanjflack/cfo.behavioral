@@ -7,11 +7,14 @@
 calibrate_risk(DT, keep_vars, cont_risk_var, n_quant, event_var, treated_var)
 }
 \arguments{
-\item{DT}{data.table}
+\item{DT}{data.table with keep_vars, cont_risk_var, event_var, and 
+treated_var}
 
-\item{keep_vars}{character vector, names of subsetting variables}
+\item{keep_vars}{character vector, names of subsetting variables (e.g. 
+"keep_jan")}
 
-\item{cont_risk_var}{character, name of contrinuous risk prediction variable}
+\item{cont_risk_var}{character, name of contrinuous risk prediction variable
+(e.g. "comp_card_untreated_statin")}
 
 \item{n_quant}{interger, number of quantiles to break cont_risk_var in to}
 

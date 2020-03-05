@@ -14,7 +14,7 @@ bin_variable(
 )
 }
 \arguments{
-\item{x}{numeric vector, variable to binned}
+\item{x}{numeric vector, variable to be binned}
 
 \item{min}{numeric, where to start binning}
 
