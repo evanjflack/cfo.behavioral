@@ -1,5 +1,8 @@
 #' Creat New Enrollee Mortality Outcomes
 #' 
+#' create_mortality_outcomes() is a function that makes indicators for both
+#'  cumulative mortality and mortality hazard for the new enrollee sample.
+#' 
 #' @param DT_deaths data.table with bene_id, and from_days (days from specified
 #'  starting point until death)
 #' @param DT_id data table with bene_id
@@ -9,7 +12,7 @@
 #'  through
 #'
 #' @return a data.table with the following colums: 
-#' \item{bene_id}
+#' \item{bene_id}{}
 #' \item{mort_X}{Indicator for mortality from start day to X days, e.g. mort_30}
 #' \item{mort_X_Y}{Indicator for mortality between X and Y days, e.g. 
 #'                 mort_30_60}

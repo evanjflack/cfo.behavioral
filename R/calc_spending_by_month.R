@@ -4,14 +4,13 @@
 #' spending by calendar month, and cumulative amounts for each within a year.
 #' 
 #' @param DT data.table with the columns bene_id, year (relative to enrollment 
-#'  year, starting at 1), month, cost, and 
-#'  oop_cost
+#'  year, starting at 1), month, cost, and oop_cost
 #' @param DT_id data.table with the column bene_id
 #' 
 #' @return data.table with 7 columns: 
-#' \item{bene_id}
-#' \item{year}
-#' \item{month}
+#' \item{bene_id}{}
+#' \item{year}{}
+#' \item{month}{}
 #' \item{cost}{Total spending in month}
 #' \item{cum_cost}{Total spending though month in year}
 #' \item{oop_cost}{OOP spending in month}

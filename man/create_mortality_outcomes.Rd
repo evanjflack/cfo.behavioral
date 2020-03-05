@@ -27,11 +27,12 @@ through}
 }
 \value{
 a data.table with the following colums: 
-\item{bene_id}
+\item{bene_id}{}
 \item{mort_X}{Indicator for mortality from start day to X days, e.g. mort_30}
 \item{mort_X_Y}{Indicator for mortality between X and Y days, e.g. 
                 mort_30_60}
 }
 \description{
-Creat New Enrollee Mortality Outcomes
+create_mortality_outcomes() is a function that makes indicators for both
+ cumulative mortality and mortality hazard for the new enrollee sample.
 }

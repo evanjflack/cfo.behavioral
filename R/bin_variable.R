@@ -35,7 +35,7 @@ bin_variable <- function(x, min = NULL, max = NULL, int = NULL, quant = NULL,
     cuts[length(cuts)] <- Inf
     labs <- seq(1, quant)
   }
-  bins <- cut(x, breaks = cuts, labels = ) %>%
+  bins <- cut(x, breaks = cuts, labels = labs) %>%
     as.character() %>%
     as.numeric()
   
