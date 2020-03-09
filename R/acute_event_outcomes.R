@@ -87,6 +87,8 @@ create_diag_indicators <- function(DT, DT_id, id_var, ami_codes, stroke_codes,
 }
 
 #' Create IP Procedure Indicators
+#' 
+#' Create indicators for select inpatient procedures (tube and vent)
 #'
 #' @param DT data.table with ip claims
 #' @param DT_id data.table with all id_vars
@@ -94,7 +96,6 @@ create_diag_indicators <- function(DT, DT_id, id_var, ami_codes, stroke_codes,
 #'
 #' @return data.table with procedure indicators
 #' 
-#' @noRd
 #'
 #' @export
 create_prcdr_indicators <-  function(DT, DT_id, id_var) {
