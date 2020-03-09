@@ -13,5 +13,6 @@ sparsify(x)
 a sparse matrix
 }
 \description{
-Iteratively make a matrix sparse
+ITeratively make a matrix sparse to deal with memory issues as Matrix() 
+ cannot make some matricies spare bacause theya re too big
 }

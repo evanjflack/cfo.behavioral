@@ -10,5 +10,5 @@ unpack_opt(option_list)
 \item{option_list}{option list from command line}
 }
 \description{
-Unpack command line options
+Take elements of option list and put them in the global environment
 }

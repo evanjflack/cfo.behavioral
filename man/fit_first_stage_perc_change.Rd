@@ -13,7 +13,8 @@ fit_first_stage_perc_change(
   keep_vars,
   cont_risk_var = NULL,
   n_quant = 5,
-  B = 10
+  B = 10,
+  quiet = FALSE
 )
 }
 \arguments{
@@ -39,10 +40,15 @@ risk in to. High risk is defined as being in the top quantile.}
 
 \item{B}{integer, number of bootstrap samples to use when calculating
 standard errors}
+
+\item{quiet}{logical (default = FALSE), if TRUE then does not print progress}
 }
 \value{
-a data.table of the first stage estimates (and their standard errors)
- in percentage terms by the specified interactions
+List with 2 elements:
+\item{dt_est}{a data.table of the first stage estimates (and their standard 
+              errors) in percentage terms by the specified interactions}
+\item{dtp}{a data.table with the conditional means of y by enrollment month, 
+           spending bin, any any other x_int}
 }
 \description{
 Estimate the first stage (y ~ first_mo), where y is a binary variable (e.g.

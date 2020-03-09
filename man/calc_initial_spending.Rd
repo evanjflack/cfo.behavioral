@@ -7,13 +7,13 @@
 calc_initial_spending(DT, DT_id, id_vars, initial_days)
 }
 \arguments{
-\item{DT}{data.table}
+\item{DT}{data.table with all elements of id_vars as well as lab_prod}
 
-\item{DT_id}{data.table}
+\item{DT_id}{data.table data.table with all elements of id_vars}
 
-\item{id_vars}{character vector}
+\item{id_vars}{character vector, names of variables to aggregate on}
 
-\item{initial_days}{integer vector}
+\item{initial_days}{integer, maximum number of days to use from enrollment}
 }
 \value{
 data.table

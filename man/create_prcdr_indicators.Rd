@@ -17,5 +17,5 @@ create_prcdr_indicators(DT, DT_id, id_var)
 data.table with procedure indicators
 }
 \description{
-Create IP Procedure Indicators
+Create indicators for select inpatient procedures (tube and vent)
 }

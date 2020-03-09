@@ -8,6 +8,10 @@
 #' @param inst chatacter, name of instrument to check balance on
 #' 
 #' @return a list with three elements
+#' \item{DT_subset}{Subsetted data.table}
+#' \item{obs}{data.table with observations at each subsetting step}
+#' \item{dt_bal}{data.table with first stage on balance variables at each 
+#'               subset}
 #' 
 #' @importFrom stats lm
 #' @importFrom data.table copy uniqueN data.table
@@ -33,8 +37,8 @@ subset_sample <- function(DT, subset_vars, progress = F, balance_vars = NULL,
       dt_fit %<>% rbind(dt_fit1)
     }
   }
-  return_list <- list(DT_subset = DT_subset, obs = obs, dt_bal = dt_fit)
   print(obs)
+  return_list <- list(DT_subset = DT_subset, obs = obs, dt_bal = dt_fit)
   return(return_list)
 }
 

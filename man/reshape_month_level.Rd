@@ -7,11 +7,11 @@
 reshape_month_level(DT, id_vars, reshape_vars, value_name)
 }
 \arguments{
-\item{DT}{data.table}
+\item{DT}{data.table with id_vars}
 
-\item{id_vars}{string vector of id column name(s)}
+\item{id_vars}{character vector of id column name(s)}
 
-\item{reshape_vars}{string vector, names of variables to reshape to long}
+\item{reshape_vars}{character vector, names of variables to reshape to long}
 
 \item{value_name}{name for the new long variable}
 }

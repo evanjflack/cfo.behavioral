@@ -9,14 +9,14 @@ calc_cmean(DT, y, x, se = F)
 \arguments{
 \item{DT}{a data.table}
 
-\item{y}{a character vector of column names of data to calculate the group mean
-of}
+\item{y}{a character vector of column names of data to calculate the group 
+mean of}
 
 \item{x}{a character vector of columns in data to group by}
 
-\item{se}{logical, if TRUE output will calculate standard error and confidence
- intervals of mean alng with  number of observations of conditional sample
-mean}
+\item{se}{logical, if TRUE output will calculate standard error and 
+confidence intervals of mean alng with  number of observations of 
+conditional sample mean}
 }
 \value{
 The data.frame/data.table of conditional sample means

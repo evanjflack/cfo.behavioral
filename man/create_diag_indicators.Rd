@@ -7,11 +7,11 @@
 create_diag_indicators(DT, DT_id, id_var, ami_codes, stroke_codes, diab_codes)
 }
 \arguments{
-\item{DT}{data.table with ip claims}
+\item{DT}{data.table with ip diagnoses}
 
 \item{DT_id}{data.table with all id_vars}
 
-\item{id_var}{character vecotr with names of coumns to aggregate on}
+\item{id_var}{character vecotr with names of coulumns to aggregate on}
 
 \item{ami_codes}{character vector of ami icd9 codes}
 
@@ -20,8 +20,13 @@ create_diag_indicators(DT, DT_id, id_var, ami_codes, stroke_codes, diab_codes)
 \item{diab_codes}{character vector of diabetes icd9 codes}
 }
 \value{
-data.table with diagnoisis indicators
+data.table with id_vars and the following other columns:
+\item{ami}{ami indicator}
+\item{stroke}{stroke indicator}
+\item{diab}{composite diabetes outcome indicator}
+\item{rep_fail}{respiratory failure indicator}
+\item{resp_arr}{respiratory arrest}
 }
 \description{
-Create IP Diagnosis Indicators
+Make indicators for diagnoses in 3 different categories: (1) AMI, (2) stroke,
 }

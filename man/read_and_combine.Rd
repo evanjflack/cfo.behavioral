@@ -7,7 +7,7 @@
 read_and_combine(lib_base_data, file, years, pct, loud = FALSE)
 }
 \arguments{
-\item{lib_base_data}{the base directory for data}
+\item{lib_base_data}{character, the base directory for data}
 
 \item{file}{base file name}
 

@@ -1,5 +1,7 @@
 #' Unpack command line options
 #' 
+#' Take elements of option list and put them in the global environment
+#' 
 #' @param option_list option list from command line
 #' 
 #' @importFrom optparse parse_args OptionParser

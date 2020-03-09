@@ -13,7 +13,8 @@
 #' @return data.table with first stage estimates for each combination in grid
 #' 
 #' @export
-estimate_year_1_2_diff <- function(DT, grid, year1_var, year2_var, x_main, x_int) {
+estimate_year_1_2_diff <- function(DT, grid, year1_var, year2_var, x_main, 
+                                   x_int) {
   dt_fit <- data.table()
   for (i in 1:nrow(grid)) {
     print(i)

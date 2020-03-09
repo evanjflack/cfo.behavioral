@@ -1,8 +1,12 @@
 #' Iteratively make a matrix sparse
 #' 
-#' @param x a matrix 
+#' ITeratively make a matrix sparse to deal with memory issues as Matrix() 
+#'  cannot make some matricies spare bacause theya re too big
+#' 
+#' @param x a matrix
 #' 
 #' @return a sparse matrix
+#' 
 #' @importFrom Matrix Matrix
 #' 
 #' @export

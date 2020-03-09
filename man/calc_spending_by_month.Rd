@@ -7,16 +7,22 @@
 calc_spending_by_month(DT, DT_id)
 }
 \arguments{
-\item{DT}{data.table with the columns bene_id, year, month, cost, and 
-oop_cost}
+\item{DT}{data.table with the columns bene_id, year (relative to enrollment 
+year, starting at 1), month, cost, and oop_cost}
 
-\item{DT_id, }{data.table with the column bene_id}
+\item{DT_id}{data.table with the column bene_id}
 }
 \value{
-data.table with 7 columns: bene_id, year, month, cost (spending in 
- that month), cum_cost (total spending in that year, through that month), 
- oop_cost (oop spending in that month), and cum_oop_cost.
+data.table with 7 columns: 
+\item{bene_id}{}
+\item{year}{}
+\item{month}{}
+\item{cost}{Total spending in month}
+\item{cum_cost}{Total spending though month in year}
+\item{oop_cost}{OOP spending in month}
+\item{cum_oop_cost}{Total OOP spending through month in year}
 }
 \description{
-Calculate New Enrollee Part D Spending by Month
+calc_spend_by_month() is a function that calculates both the total/OOP
+spending by calendar month, and cumulative amounts for each within a year.
 }

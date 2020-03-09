@@ -3,7 +3,7 @@ Type: Package
 Title: Polypharmacy Project
 Version: 0.1.0
 Author: Authors@R: c(
-  person("Evan", "Flack", email = "evanjflack@gmail.com", 
+  person("Evan", "Flack", email = "evanjflack@gmail.com",
   role = c("aut", "cre")))
 Maintainer: Evan Flack <evanjflack@gmail.com>
 Description: This package contains functions for the polypharmacy project.
@@ -16,13 +16,13 @@ Imports:
   Matrix,
   tictoc,
   optparse,
-  foreach, 
+  foreach,
   doParallel,
   estimatr
 Suggests:
   knitr,
   rmarkdown,
-  testthat, 
+  testthat,
   tidyr
 Encoding: UTF-8
 LazyData: true

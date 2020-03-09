@@ -1,10 +1,13 @@
 #' Calculate normalized percentage
 #' 
+#' Calculate the normalized percentage of observations in a particular group 
+#'  (e.g. spending bin) within a larger group (e.g. enrollment month)
+#' 
 #' @param DT data.table
 #' @param x1 character, the variable you want the normalized percentage of
 #' @param x2 character vector, the variables you want to normalize by
 #' 
-#' @return data.table of normalized perctages
+#' @return data.table of normalized perctages by group
 #' 
 #' @export
 calc_norm_perc <- function(DT, x1, x2) {
