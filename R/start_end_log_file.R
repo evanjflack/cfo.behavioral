@@ -42,6 +42,9 @@ start_log_file <- function(file_name = NULL, log_file = TRUE, print = TRUE) {
       if (exists("pred_cat")) {
         message("pred_cat = ", pred_cat)
       }
+      if (exists("initial_days")) {
+        message("initial_days = ", initial_days)
+      }
     }
   }
 }
@@ -65,5 +68,6 @@ end_log_file <- function() {
 
 if(getRversion() >= "2.15.1") {
   utils::globalVariables(c("pct", "first_year", "last_year", "resp_var", 
-                           "id_strat", "population", "pred_cat"))
+                           "id_strat", "population", "pred_cat", 
+                           "initial_days"))
 }
