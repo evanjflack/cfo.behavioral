@@ -46,6 +46,7 @@ start_log_file <- function(file_name = NULL, log_file = TRUE, print = TRUE) {
         message("initial_days = ", initial_days)
       }
     }
+    message("")
   }
 }
 
