@@ -33,8 +33,9 @@ grid
  \item{deg: }{integer, degree polynomial of instrument to include, ex: 2}
  \item{cut_int: }{numeric, size of predicted spending bins, ex: 500}
  \item{pred_type: }{character, type of spending prediction to use, ex: "ensemble}
- \item{time_interact: }{character, name of the time variable to interact with 
-   instrument and predicted spending, ex: "rfrnc_yr"}
+ \item{time_interact: }{character, name of the time variable to interact with
+ #'    instrument and predicted spending, ex: "rfrnc_yr"}
+ \item{initial_days: }{integer, number of initial_days used in prediction}
  \item{se_type: }{character, type of SEs to calculate, inherits from estimatr 
   iv_robust, ex: "stata"}
  \item{keep_age: }{boolean, if 1 then subsets sample to only those enrolling 

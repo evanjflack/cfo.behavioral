@@ -18,8 +18,9 @@
 #'  \item{deg: }{integer, degree polynomial of instrument to include, ex: 2}
 #'  \item{cut_int: }{numeric, size of predicted spending bins, ex: 500}
 #'  \item{pred_type: }{character, type of spending prediction to use, ex: "ensemble}
-#'  \item{time_interact: }{character, name of the time variable to interact with 
-#'    instrument and predicted spending, ex: "rfrnc_yr"}
+#'  \item{time_interact: }{character, name of the time variable to interact with
+#'  #'    instrument and predicted spending, ex: "rfrnc_yr"}
+#'  \item{initial_days: }{integer, number of initial_days used in prediction}
 #'  \item{se_type: }{character, type of SEs to calculate, inherits from estimatr 
 #'   iv_robust, ex: "stata"}
 #'  \item{keep_age: }{boolean, if 1 then subsets sample to only those enrolling 
@@ -50,6 +51,7 @@ iterate_2sls <- function(DT, grid, max_cores) {
                   outcome_period = grid$outcome_period, 
                   cut_int = grid$cut_int, 
                   pred_type = grid$pred_type, 
+                  initial_days = grid$initial_days,
                   keep_age = grid$keep_age, 
                   keep_jan = grid$keep_jan, 
                   keep_join_month = grid$keep_join_month, 
@@ -60,9 +62,9 @@ iterate_2sls <- function(DT, grid, max_cores) {
                   .multicombine = TRUE) %dopar% 
     {
       # Prep data table
-      DT_fit <- prep_2sls_data(DT, pred_type, cut_int, outcome, outcome_period, 
-                               instrument, keep_age, keep_jan, keep_join_month, 
-                               keep_same)
+      DT_fit <- prep_2sls_data(DT, pred_type, initial_days, cut_int, outcome, 
+                               outcome_period, instrument, keep_age, keep_jan, 
+                               keep_join_month, keep_same)
       
       # Make forumla
       controls <- c("race", "sex")
@@ -89,12 +91,12 @@ iterate_2sls <- function(DT, grid, max_cores) {
   return(dtp)
 }
 
-prep_2sls_data <- function(DT, pred_type, cut_int, outcome, outcome_period, 
-                      instrument, keep_age, keep_jan, keep_join_month, 
-                      keep_same) {
+prep_2sls_data <- function(DT, pred_type, initial_days, cut_int, outcome, 
+                           outcome_period, instrument, keep_age, keep_jan, 
+                           keep_join_month, keep_same) {
   DT_fit <- copy(DT) %>%
-    .[, pred_cut := bin_variable(get(paste0(pred_type, "_pred")), 0, 10000, 
-                                 cut_int)] %>% 
+    .[, pred_cut := bin_variable(get(paste0(pred_type, "_pred_", initial_days)),
+                                 0, 10000, cut_int)] %>% 
     .[, outcome := get(paste(outcome, outcome_period, sep = "_"))] %>% 
     .[, instrument := get(instrument)]
   
