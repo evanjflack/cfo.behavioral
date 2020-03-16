@@ -96,7 +96,7 @@ prep_2sls_data <- function(DT, pred_type, initial_days, cut_int, outcome,
                            keep_join_month, keep_same) {
   DT_fit <- copy(DT) %>%
     .[, pred_cut := bin_variable(get(paste0(pred_type, "_pred_", initial_days)),
-                                 0, 10000, cut_int)] %>% 
+                                 cut_int, 10000, cut_int)] %>% 
     .[, outcome := get(paste(outcome, outcome_period, sep = "_"))] %>% 
     .[, instrument := get(instrument)]
   
