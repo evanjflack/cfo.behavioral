@@ -85,7 +85,7 @@ create_diag_indicators <- function(DT, DT_id, id_var, ami_codes, stroke_codes,
     .[, ami := ifelse(substr(dgnscd, 1, 3) %in% ami_codes, 1, 0)] %>%
     .[, stroke := ifelse(substr(dgnscd, 1, 3) %in% stroke_codes, 1, 0)] %>%
     .[, comp_diab := ifelse(dgnscd %in% diab_codes, 1, 0)] %>% 
-    .[, suicide := ifelse(substr(dgnscd, 1, 4) %in% suicide_codes, 1, 0)] %>%
+    .[, suicide := ifelse(substr(dgnscd, 1, 4) %in% suicide_codes, 1, 0)]
 
   # Aggregate by id_vars and fill in 0s
   DT %<>%
