@@ -5,6 +5,7 @@
 #'
 #' @param ip data.table of inpatient claims with the columns bene_id, clm_id,
 #'  from_dt, and dgnscd1
+#' @param num_dgns integer (1-6), number of diagnosis codes to use
 #' @param num_prcdr integer (1-6), number of procedure codes to use
 #'
 #' @return list with 2 elements
@@ -14,12 +15,18 @@
 #' @importFrom data.table melt
 #'
 #' @export
-unpack_ip <- function(ip, num_prcdr) {
+unpack_ip <- function(ip, num_dgns, num_prcdr) {
   
   # Principle diagnosis
+  
+  dgns_vars <- paste0("dgnscd", seq(1, num_dgns))
   ip_diag <- ip %>%
     .[clm_ln == 1, ] %>%
-    .[, c("bene_id", "clm_id", "from_dt", "dgnscd1"), with = FALSE]
+    .[, c("bene_id", "clm_id", "from_dt", dgns_vars), with = FALSE] %>% 
+    setnames(dgns_vars, as.character(seq(1, num_dgns))) %>% 
+    melt(id.var = c("bene_id", "clm_id", "from_dt"), 
+         variable.name = "code_num", 
+         value.name = "dgnscd")
 
   # First "num_prcdr" procedures
   prcdr_vars <- paste0("prcdrcd", seq(1, num_prcdr))
