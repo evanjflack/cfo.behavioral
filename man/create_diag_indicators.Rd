@@ -4,7 +4,15 @@
 \alias{create_diag_indicators}
 \title{Create IP Diagnosis Indicators}
 \usage{
-create_diag_indicators(DT, DT_id, id_var, ami_codes, stroke_codes, diab_codes)
+create_diag_indicators(
+  DT,
+  DT_id,
+  id_var,
+  ami_codes,
+  stroke_codes,
+  diab_codes,
+  suicide_codes
+)
 }
 \arguments{
 \item{DT}{data.table with ip diagnoses}
@@ -18,6 +26,8 @@ create_diag_indicators(DT, DT_id, id_var, ami_codes, stroke_codes, diab_codes)
 \item{stroke_codes}{character vector of stroke icd9 codes}
 
 \item{diab_codes}{character vector of diabetes icd9 codes}
+
+\item{suicide_codes}{character vector of self harm icd9 codes}
 }
 \value{
 data.table with id_vars and the following other columns:
@@ -26,6 +36,7 @@ data.table with id_vars and the following other columns:
 \item{diab}{composite diabetes outcome indicator}
 \item{rep_fail}{respiratory failure indicator}
 \item{resp_arr}{respiratory arrest}
+\item{suicide}{any self harm}
 }
 \description{
 Make indicators for diagnoses in 3 different categories: (1) AMI, (2) stroke,
