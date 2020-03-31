@@ -81,7 +81,7 @@ unpack_ip <- function(ip, num_dgns, num_prcdr) {
 #' @export
 create_diag_indicators <- function(DT, DT_id, id_var, ami_codes, stroke_codes,
                                    diab_codes, suicide_codes, od_codes, 
-                                   ode_e_codes) {
+                                   od_e_codes) {
   # Make indicators
   DT %<>%
     .[, resp_fail := ifelse(substr(dgnscd, 1, 4) == "5188", 1, 0)] %>%
