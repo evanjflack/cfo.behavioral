@@ -13,7 +13,7 @@ create_diag_indicators(
   diab_codes,
   suicide_codes,
   od_codes,
-  ode_e_codes
+  od_e_codes
 )
 }
 \arguments{
@@ -43,7 +43,7 @@ data.table with id_vars and the following other columns:
 \item{rep_fail}{respiratory failure indicator}
 \item{resp_arr}{respiratory arrest}
 \item{suicide}{any self harm}
-\iten{od}{overdose}
+\item{od}{overdose}
 }
 \description{
 Make indicators for diagnoses in 3 different categories: (1) AMI, (2) stroke,

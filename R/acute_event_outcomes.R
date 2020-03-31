@@ -76,7 +76,7 @@ unpack_ip <- function(ip, num_dgns, num_prcdr) {
 #' \item{rep_fail}{respiratory failure indicator}
 #' \item{resp_arr}{respiratory arrest}
 #' \item{suicide}{any self harm}
-#' \iten{od}{overdose}
+#' \item{od}{overdose}
 #'
 #' @export
 create_diag_indicators <- function(DT, DT_id, id_var, ami_codes, stroke_codes,
@@ -131,7 +131,7 @@ create_prcdr_indicators <-  function(DT, DT_id, id_var) {
 
 # Deal with R CMD check
 if(getRversion() >= "2.15.1") {
-  utils::globalVariables(c("clm_ln", "prcdrcd", "prcdrdt", "dgnscd1",
+  utils::globalVariables(c("clm_ln", "prcdrcd", "prcdrdt", "dgnscd",
                            "ami", "comp_diab", "resp_arr", "resp_fail",
-                           "stroke", "tube", "vent"))
+                           "stroke", "tube", "vent", "od", "suicide"))
 }
