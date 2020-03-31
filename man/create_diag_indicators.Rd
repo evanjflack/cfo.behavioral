@@ -11,7 +11,9 @@ create_diag_indicators(
   ami_codes,
   stroke_codes,
   diab_codes,
-  suicide_codes
+  suicide_codes,
+  od_codes,
+  ode_e_codes
 )
 }
 \arguments{
@@ -28,6 +30,10 @@ create_diag_indicators(
 \item{diab_codes}{character vector of diabetes icd9 codes}
 
 \item{suicide_codes}{character vector of self harm icd9 codes}
+
+\item{od_codes}{character vector for overdose codes (non-e)}
+
+\item{od_e_codes}{character vector for e overdose codes}
 }
 \value{
 data.table with id_vars and the following other columns:
@@ -37,6 +43,7 @@ data.table with id_vars and the following other columns:
 \item{rep_fail}{respiratory failure indicator}
 \item{resp_arr}{respiratory arrest}
 \item{suicide}{any self harm}
+\iten{od}{overdose}
 }
 \description{
 Make indicators for diagnoses in 3 different categories: (1) AMI, (2) stroke,

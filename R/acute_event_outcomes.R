@@ -66,6 +66,8 @@ unpack_ip <- function(ip, num_dgns, num_prcdr) {
 #' @param stroke_codes character vector of stroke icd9 codes
 #' @param diab_codes character vector of diabetes icd9 codes
 #' @param suicide_codes character vector of self harm icd9 codes
+#' @param od_codes character vector for overdose codes (non-e)
+#' @param od_e_codes character vector for e overdose codes
 #'
 #' @return data.table with id_vars and the following other columns:
 #' \item{ami}{ami indicator}
@@ -74,10 +76,12 @@ unpack_ip <- function(ip, num_dgns, num_prcdr) {
 #' \item{rep_fail}{respiratory failure indicator}
 #' \item{resp_arr}{respiratory arrest}
 #' \item{suicide}{any self harm}
+#' \iten{od}{overdose}
 #'
 #' @export
 create_diag_indicators <- function(DT, DT_id, id_var, ami_codes, stroke_codes,
-                                   diab_codes, suicide_codes) {
+                                   diab_codes, suicide_codes, od_codes, 
+                                   ode_e_codes) {
   # Make indicators
   DT %<>%
     .[, resp_fail := ifelse(substr(dgnscd, 1, 4) == "5188", 1, 0)] %>%
@@ -85,13 +89,15 @@ create_diag_indicators <- function(DT, DT_id, id_var, ami_codes, stroke_codes,
     .[, ami := ifelse(substr(dgnscd, 1, 3) %in% ami_codes, 1, 0)] %>%
     .[, stroke := ifelse(substr(dgnscd, 1, 3) %in% stroke_codes, 1, 0)] %>%
     .[, comp_diab := ifelse(dgnscd %in% diab_codes, 1, 0)] %>% 
-    .[, suicide := ifelse(substr(dgnscd, 1, 4) %in% suicide_codes, 1, 0)]
+    .[, suicide := ifelse(substr(dgnscd, 1, 4) %in% suicide_codes, 1, 0)] %>% 
+    .[, od := ifelse(substr(dgnscd, 1, 3) %in% od_codes | 
+                       substr(dgnscd, 1, 4) %in% od_e_codes, 1, 0)]
 
   # Aggregate by id_vars and fill in 0s
   DT %<>%
     .[, lapply(.SD, max), by = id_var,
       .SDcols = c("ami", "stroke", "resp_fail", "resp_arr", "comp_diab", 
-                  "suicide")] %>%
+                  "suicide", "od")] %>%
     fill_in_zeros(DT_id, id_var)
 
   return(DT)
