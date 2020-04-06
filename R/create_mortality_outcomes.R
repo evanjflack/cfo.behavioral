@@ -26,7 +26,7 @@ create_mortality_outcomes <- function(DT_deaths, DT_id = "pde_benes",
   outcome_periods <- seq(start_day + int, int*int_num, int)
   for (i in outcome_periods) {
     mortality_outcomes %<>% 
-      .[, paste("mort_int", i - int, i, sep = "_") := 
+      .[, paste("mort_int", i, sep = "_") := 
           ifelse(from_days >= i - int & from_days < i , 1, 0)] %>%  
       .[, paste("mort", i, sep = "_") := 
           ifelse(from_days < i, 1, 0)]

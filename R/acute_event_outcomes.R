@@ -4,7 +4,8 @@
 #' generating acute outcome variables.
 #'
 #' @param ip data.table of inpatient claims with the columns bene_id, clm_id,
-#'  from_dt, and dgnscd1
+#'  from_dt, and dgnscd
+#' @param num_dgns integer (1-6), number of diagnosis codes to use
 #' @param num_prcdr integer (1-6), number of procedure codes to use
 #'
 #' @return list with 2 elements
@@ -14,12 +15,18 @@
 #' @importFrom data.table melt
 #'
 #' @export
-unpack_ip <- function(ip, num_prcdr) {
+unpack_ip <- function(ip, num_dgns, num_prcdr) {
   
   # Principle diagnosis
+  
+  dgns_vars <- paste0("dgnscd", seq(1, num_dgns))
   ip_diag <- ip %>%
     .[clm_ln == 1, ] %>%
-    .[, c("bene_id", "clm_id", "from_dt", "dgnscd1"), with = FALSE]
+    .[, c("bene_id", "clm_id", "from_dt", dgns_vars), with = FALSE] %>% 
+    setnames(dgns_vars, as.character(seq(1, num_dgns))) %>% 
+    melt(id.var = c("bene_id", "clm_id", "from_dt"), 
+         variable.name = "code_num", 
+         value.name = "dgnscd")
 
   # First "num_prcdr" procedures
   prcdr_vars <- paste0("prcdrcd", seq(1, num_prcdr))
@@ -58,6 +65,9 @@ unpack_ip <- function(ip, num_prcdr) {
 #' @param ami_codes character vector of ami icd9 codes
 #' @param stroke_codes character vector of stroke icd9 codes
 #' @param diab_codes character vector of diabetes icd9 codes
+#' @param suicide_codes character vector of self harm icd9 codes
+#' @param od_codes character vector for overdose codes (non-e)
+#' @param od_e_codes character vector for e overdose codes
 #'
 #' @return data.table with id_vars and the following other columns:
 #' \item{ami}{ami indicator}
@@ -65,22 +75,29 @@ unpack_ip <- function(ip, num_prcdr) {
 #' \item{diab}{composite diabetes outcome indicator}
 #' \item{rep_fail}{respiratory failure indicator}
 #' \item{resp_arr}{respiratory arrest}
+#' \item{suicide}{any self harm}
+#' \item{od}{overdose}
 #'
 #' @export
 create_diag_indicators <- function(DT, DT_id, id_var, ami_codes, stroke_codes,
-                                   diab_codes) {
+                                   diab_codes, suicide_codes, od_codes, 
+                                   od_e_codes) {
   # Make indicators
   DT %<>%
-    .[, resp_fail := ifelse(substr(dgnscd1, 1, 4) == "5188", 1, 0)] %>%
-    .[, resp_arr := ifelse(substr(dgnscd1, 1, 4) == "7991", 1, 0)] %>%
-    .[, ami := ifelse(substr(dgnscd1, 1, 3) %in% ami_codes, 1, 0)] %>%
-    .[, stroke := ifelse(substr(dgnscd1, 1, 3) %in% stroke_codes, 1, 0)] %>%
-    .[, comp_diab := ifelse(dgnscd1 %in% diab_codes, 1, 0)]
+    .[, resp_fail := ifelse(substr(dgnscd, 1, 4) == "5188", 1, 0)] %>%
+    .[, resp_arr := ifelse(substr(dgnscd, 1, 4) == "7991", 1, 0)] %>%
+    .[, ami := ifelse(substr(dgnscd, 1, 3) %in% ami_codes, 1, 0)] %>%
+    .[, stroke := ifelse(substr(dgnscd, 1, 3) %in% stroke_codes, 1, 0)] %>%
+    .[, comp_diab := ifelse(dgnscd %in% diab_codes, 1, 0)] %>% 
+    .[, suicide := ifelse(substr(dgnscd, 1, 4) %in% suicide_codes, 1, 0)] %>% 
+    .[, od := ifelse(substr(dgnscd, 1, 3) %in% od_codes | 
+                       substr(dgnscd, 1, 4) %in% od_e_codes, 1, 0)]
 
   # Aggregate by id_vars and fill in 0s
   DT %<>%
     .[, lapply(.SD, max), by = id_var,
-      .SDcols = c("ami", "stroke", "resp_fail", "resp_arr", "comp_diab")] %>%
+      .SDcols = c("ami", "stroke", "resp_fail", "resp_arr", "comp_diab", 
+                  "suicide", "od")] %>%
     fill_in_zeros(DT_id, id_var)
 
   return(DT)
@@ -114,7 +131,7 @@ create_prcdr_indicators <-  function(DT, DT_id, id_var) {
 
 # Deal with R CMD check
 if(getRversion() >= "2.15.1") {
-  utils::globalVariables(c("clm_ln", "prcdrcd", "prcdrdt", "dgnscd1",
+  utils::globalVariables(c("clm_ln", "prcdrcd", "prcdrdt", "dgnscd",
                            "ami", "comp_diab", "resp_arr", "resp_fail",
-                           "stroke", "tube", "vent"))
+                           "stroke", "tube", "vent", "od", "suicide"))
 }

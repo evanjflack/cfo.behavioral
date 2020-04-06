@@ -4,11 +4,13 @@
 \alias{unpack_ip}
 \title{Unpack IP Claims (Acute Outcomes)}
 \usage{
-unpack_ip(ip, num_prcdr)
+unpack_ip(ip, num_dgns, num_prcdr)
 }
 \arguments{
 \item{ip}{data.table of inpatient claims with the columns bene_id, clm_id,
-from_dt, and dgnscd1}
+from_dt, and dgnscd}
+
+\item{num_dgns}{integer (1-6), number of diagnosis codes to use}
 
 \item{num_prcdr}{integer (1-6), number of procedure codes to use}
 }
