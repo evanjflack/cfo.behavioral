@@ -88,18 +88,22 @@ iterate_2sls <- function(DT, grid, max_cores) {
   stopImplicitCluster()
   
   # Append the estimation options
-  if (risk == 0) {
-    dtp %<>%
-      cbind(grid, .)
-  } else {
-    grid2 <- grid %>% 
-      as.data.table() %>% 
-      .[, ord := seq(1, .N)] %>% 
-      rbind(., .) %>% 
-      .[order(ord), ]
-    dtp %<>% 
-      cbind(grid2, .)
-  }
+  
+  grid %<>% 
+    as.data.table() %>% 
+    .[, risk := ifelse(risk_cut != 0, 1, 0)] %>% 
+    .[, ord := seq(1, .N)]
+  
+  risk_grid <- grid %>% 
+    .[risk == 1, ]
+  
+  grid %<>% 
+    rbind(risk_grid) %>% 
+    .[order(ord), ]
+  
+  dtp %<>% 
+    rbind(grid, .)
+  
   return(dtp)
 }
 
