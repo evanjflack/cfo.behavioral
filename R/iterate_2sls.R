@@ -102,7 +102,7 @@ iterate_2sls <- function(DT, grid, max_cores) {
     .[order(ord), ]
   
   dtp %<>% 
-    rbind(grid, .)
+    cbind(grid, .)
   
   return(dtp)
 }
