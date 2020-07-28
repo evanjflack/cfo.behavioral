@@ -14,6 +14,7 @@
 #' \itemize{
 #'  \item{outcome: }{character, name of outcome variable, ex: "mort"}
 #'  \item{outcome_period: }{integer, period of outcome, ex: 30}
+#'  \item{x_var: }{character, name of the endogenous variable}
 #'  \item{instrument: }{character, name of instumental variable, ex: "first_mo"}
 #'  \item{deg: }{integer, degree polynomial of instrument to include, ex: 2}
 #'  \item{cut_int: }{numeric, size of predicted spending bins, ex: 500}
@@ -48,9 +49,8 @@ iterate_2sls <- function(DT, grid, max_cores) {
   dtp  <- foreach(instrument = grid$instrument, 
                   deg = grid$deg, 
                   outcome = grid$outcome,
-                  outcome_period = grid$outcome_period, 
-                  cut_int = grid$cut_int, 
-                  pred_type = grid$pred_type, 
+                  outcome_period = grid$outcome_period,
+                  x_var = grid$x_var, 
                   initial_days = grid$initial_days,
                   keep_age = grid$keep_age, 
                   keep_jan = grid$keep_jan, 
@@ -61,9 +61,10 @@ iterate_2sls <- function(DT, grid, max_cores) {
                   .combine = "rbind",
                   .multicombine = TRUE) %dopar% 
     {
+      
       # Prep data table
-      DT_fit <- prep_2sls_data(DT, pred_type, initial_days, cut_int, outcome, 
-                               outcome_period, instrument, keep_age, keep_jan, 
+      DT_fit <- prep_2sls_data(DT, initial_days,  outcome, 
+                               outcome_period, x_var, instrument, keep_age, keep_jan, 
                                keep_join_month, keep_same)
       
       # Make forumla
@@ -74,9 +75,9 @@ iterate_2sls <- function(DT, grid, max_cores) {
       fit_iv <- iv_robust(form, data = DT_fit, se_type = se_type)
       
       # Format output
-      tidy(fit_iv) %>% 
-        .[2, ] %>% 
+      hi <- tidy(fit_iv) %>% 
         as.data.table() %>% 
+        .[term == "x1"] %>%
         setnames(c("estimate", "std.error", "conf.low", "conf.high"), 
                  c("iv_est", "iv_se", "lb", "ub")) %>% 
         .[, .(iv_est, iv_se, statistic, p.value, lb, ub)] %>% 
@@ -91,14 +92,19 @@ iterate_2sls <- function(DT, grid, max_cores) {
   return(dtp)
 }
 
-prep_2sls_data <- function(DT, pred_type, initial_days, cut_int, outcome, 
-                           outcome_period, instrument, keep_age, keep_jan, 
-                           keep_join_month, keep_same) {
+prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var, 
+                           instrument, keep_age, keep_jan, keep_join_month, 
+                           keep_same) {
   DT_fit <- copy(DT) %>%
-    .[, pred_cut := bin_variable(get(paste0(pred_type, "_pred_", initial_days)),
-                                 cut_int, 10000, cut_int)] %>% 
+    .[, x1 := get(x_var)] %>% 
     .[, outcome := get(paste(outcome, outcome_period, sep = "_"))] %>% 
-    .[, instrument := get(instrument)]
+    .[, instrument := get(instrument)] %>% 
+    .[, spend_pred := get(paste0("ensemble_pred_", initial_days))] %>% 
+    .[, pred_cut := cut(spend_pred, 
+                        breaks = c(-Inf, quantile(spend_pred, c(seq(.1, .7, .1), seq(.71, .99, .01))), Inf), 
+                        labels = c(seq(10, 70, 10), seq(71, 100, 1))), 
+      by = first_mo] %>% 
+    .[, year_cut := ifelse(rfrnc_yr <= 2010, "2007-2010", "2011-2012")]
   
   crit_grid <- c("keep_age" = keep_age, 
                  "keep_jan" = keep_jan, 
@@ -108,6 +114,12 @@ prep_2sls_data <- function(DT, pred_type, initial_days, cut_int, outcome,
   for (k in crit) {
     DT_fit %<>%
       .[get(k) == 1, ]
+  }
+  # remove those that dies in earlier periods 
+  if (outcome_period > 1 & outcome == "mort") {
+    DT_fit %<>% 
+      .[, pre_mort := rowSums(.SD), .SDcols = paste0("mort_", seq(1, outcome_period - 1))] %>% 
+      .[pre_mort == 0, ]
   }
   return(DT_fit)
 }
@@ -127,7 +139,7 @@ make_2sls_formula <- function(controls, time_interact, deg) {
     lapply(paste_factor) %>% 
     unlist() %>% 
     paste(collapse = " + ")
-  ss_form <- paste0("outcome ~ cost100 + ", interacts, " + ", controls)
+  ss_form <- paste0("outcome ~ x1 + ", interacts, " + ", controls)
   inst_form <- paste(inst1, interacts, sep = "*") %>% 
     paste(controls, sep = " + ")
   form <- paste(ss_form, " | ", inst_form) %>% 
@@ -140,7 +152,7 @@ if(getRversion() >= "2.15.1") {
   utils::globalVariables(c("cut_int", "deg", "instrument", "iv_est", 
                            "iv_se", "keep_age", "keep_jan", "keep_join_month", 
                            "keep_same", "keep_join_month", "lb", "outcome", 
-                           "outcome_period", "p.value", "pred_cut", 
+                           "outcome_period", "x_var", "p.value", "pred_cut", 
                            "pred_type", "se_type", "statistic", "time_interact",
                            "ub", "obs"))
 }

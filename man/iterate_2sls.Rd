@@ -29,6 +29,7 @@ grid
 \itemize{
  \item{outcome: }{character, name of outcome variable, ex: "mort"}
  \item{outcome_period: }{integer, period of outcome, ex: 30}
+ \item{x_var: }{character, name of the endogenous variable}
  \item{instrument: }{character, name of instumental variable, ex: "first_mo"}
  \item{deg: }{integer, degree polynomial of instrument to include, ex: 2}
  \item{cut_int: }{numeric, size of predicted spending bins, ex: 500}

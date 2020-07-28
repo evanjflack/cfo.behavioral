@@ -4,6 +4,3 @@
 \name{polypharmacy}
 \alias{polypharmacy}
 \title{\code{} package}
-\description{
-\code{} package
-}
