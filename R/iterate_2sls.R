@@ -58,6 +58,8 @@ iterate_2sls <- function(DT, grid, max_cores) {
                   keep_same = grid$keep_same, 
                   time_interact = grid$time_interact, 
                   se_type = grid$se_type, 
+                  risk_type = grid$risk_type, 
+                  risk_cut = grid$risk_cut, 
                   .combine = "rbind",
                   .multicombine = TRUE) %dopar% 
     {
@@ -65,7 +67,7 @@ iterate_2sls <- function(DT, grid, max_cores) {
       # Prep data table
       DT_fit <- prep_2sls_data(DT, initial_days,  outcome, 
                                outcome_period, x_var, instrument, keep_age, keep_jan, 
-                               keep_join_month, keep_same)
+                               keep_join_month, keep_same, risk_type, risk_cut)
       
       # Make forumla
       controls <- c("race", "sex")
@@ -75,36 +77,43 @@ iterate_2sls <- function(DT, grid, max_cores) {
       fit_iv <- iv_robust(form, data = DT_fit, se_type = se_type)
       
       # Format output
-      hi <- tidy(fit_iv) %>% 
+      dtp1 <- tidy(fit_iv) %>% 
         as.data.table() %>% 
-        .[term == "x1"] %>%
+        .[grepl("x1", term)] %>%
         setnames(c("estimate", "std.error", "conf.low", "conf.high"), 
                  c("iv_est", "iv_se", "lb", "ub")) %>% 
-        .[, .(iv_est, iv_se, statistic, p.value, lb, ub)] %>% 
+        .[, .(term, iv_est, iv_se, statistic, p.value, lb, ub)] %>% 
         .[, obs := nrow(DT_fit)]
     }
   stopImplicitCluster()
   
   # Append the estimation options
-  dtp %<>%
-    cbind(grid, .)
-  
+  if (risk == 0) {
+    dtp %<>%
+      cbind(grid, .)
+  } else {
+    grid2 <- grid %>% 
+      as.data.table() %>% 
+      .[, ord := seq(1, .N)] %>% 
+      rbind(., .) %>% 
+      .[order(ord), ]
+    dtp %<>% 
+      cbind(grid2, .)
+  }
   return(dtp)
 }
 
 prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var, 
                            instrument, keep_age, keep_jan, keep_join_month, 
-                           keep_same) {
+                           keep_same, risk_type, risk_cut) {
+  
   DT_fit <- copy(DT) %>%
     .[, x1 := get(x_var)] %>% 
     .[, outcome := get(paste(outcome, outcome_period, sep = "_"))] %>% 
     .[, instrument := get(instrument)] %>% 
-    .[, spend_pred := get(paste0("ensemble_pred_", initial_days))] %>% 
-    .[, pred_cut := cut(spend_pred, 
-                        breaks = c(-Inf, quantile(spend_pred, c(seq(.1, .7, .1), seq(.71, .99, .01))), Inf), 
-                        labels = c(seq(10, 70, 10), seq(71, 100, 1))), 
-      by = first_mo] %>% 
+    .[, spend_pred := get(paste0("ensemble_pred_", initial_days))] %>%
     .[, year_cut := ifelse(rfrnc_yr <= 2010, "2007-2010", "2011-2012")]
+
   
   crit_grid <- c("keep_age" = keep_age, 
                  "keep_jan" = keep_jan, 
@@ -121,6 +130,19 @@ prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var,
       .[, pre_mort := rowSums(.SD), .SDcols = paste0("mort_", seq(1, outcome_period - 1))] %>% 
       .[pre_mort == 0, ]
   }
+  
+  DT_fit %<>% 
+    .[, pred_cut := cut(spend_pred, 
+                        breaks = c(-Inf, quantile(spend_pred, c(seq(.1, .7, .1), seq(.71, .99, .01))), Inf), 
+                        labels = c(seq(10, 70, 10), seq(71, 100, 1))), 
+      by = first_mo]
+  
+  if (risk_cut != 0) {
+    DT_fit %<>% 
+      .[, risk := get(paste0("ensemble_pred_", risk_type, "_", initial_days))] %>% 
+      .[, high_risk := ifelse(risk >= quantile(risk, risk_cut), 1, 0)]
+  }
+  
   return(DT_fit)
 }
 
@@ -128,18 +150,29 @@ paste_factor <- function(x) {
   paste0("factor(", x, ")")
 }
 
-make_2sls_formula <- function(controls, time_interact, deg) {
+make_2sls_formula <- function(controls, time_interact, deg, risk_cut) {
   inst1 <- paste0("poly(instrument, ", deg, ")")
   interacts <- c("pred_cut", time_interact)
   interacts %<>% 
     lapply(paste_factor) %>% 
     unlist() %>% 
     paste(collapse = "*")
+  if (risk_cut != 0) {
+    interacts %<>% 
+      paste0("*", "factor(high_risk)")
+  }
+  
   controls %<>% 
     lapply(paste_factor) %>% 
     unlist() %>% 
     paste(collapse = " + ")
-  ss_form <- paste0("outcome ~ x1 + ", interacts, " + ", controls)
+  
+  if (risk_cut == 0) {
+    ss_form <- paste0("outcome ~ x1 + ", interacts, " + ", controls)
+  } else {
+    ss_form <- paste0("outcome ~ x1*factor(high_risk) + ", interacts, " + ", controls)
+  }
+  
   inst_form <- paste(inst1, interacts, sep = "*") %>% 
     paste(controls, sep = " + ")
   form <- paste(ss_form, " | ", inst_form) %>% 
@@ -155,5 +188,6 @@ if(getRversion() >= "2.15.1") {
                            "outcome_period", "x_var", "p.value", "pred_cut", 
                            "pred_type", "se_type", "statistic", "time_interact",
                            "ub", "obs", "first_mo", "pre_mort", "spend_pred", "x1", 
-                           "year_cut", "rfrnc_yr"))
+                           "year_cut", "rfrnc_yr", "risk", "high_risk", 
+                           "risk_cut", "risk_type", "ord"))
 }
