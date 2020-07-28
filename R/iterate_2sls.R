@@ -154,5 +154,6 @@ if(getRversion() >= "2.15.1") {
                            "keep_same", "keep_join_month", "lb", "outcome", 
                            "outcome_period", "x_var", "p.value", "pred_cut", 
                            "pred_type", "se_type", "statistic", "time_interact",
-                           "ub", "obs"))
+                           "ub", "obs", "first_mo", "pre_mort", "spend_pred", "x1", 
+                           "year_cut", "rfrnc_yr"))
 }
