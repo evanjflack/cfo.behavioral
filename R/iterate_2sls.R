@@ -71,7 +71,7 @@ iterate_2sls <- function(DT, grid, max_cores) {
       
       # Make forumla
       controls <- c("race", "sex")
-      form <- make_2sls_formula(controls, time_interact, deg)
+      form <- make_2sls_formula(controls, time_interact, deg, risk_cut)
       
       # Fit 2SLS
       fit_iv <- iv_robust(form, data = DT_fit, se_type = se_type)
