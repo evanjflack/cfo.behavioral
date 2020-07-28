@@ -140,7 +140,7 @@ prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var,
   if (risk_cut != 0) {
     DT_fit %<>% 
       .[, risk := get(paste0("ensemble_pred_", risk_type, "_", initial_days))] %>% 
-      .[, high_risk := ifelse(risk >= quantile(risk, risk_cut), 1, 0)]
+      .[, high_risk := ifelse(risk >= quantile(risk, risk_cut), 1, 0), by = first_mo]
   }
   
   return(DT_fit)
