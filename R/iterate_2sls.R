@@ -228,5 +228,6 @@ if(getRversion() >= "2.15.1") {
                            "pred_type", "se_type", "statistic", "time_interact",
                            "ub", "obs", "first_mo", "pre_mort", "spend_pred", "x1", 
                            "year_cut", "rfrnc_yr", "risk", "high_risk", 
-                           "risk_cut", "risk_type", "ord"))
+                           "risk_cut", "risk_type", "ord", "inc", "high_inc", 
+                           "inc_var"))
 }
