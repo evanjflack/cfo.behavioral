@@ -90,18 +90,24 @@ iterate_2sls <- function(DT, grid, max_cores) {
     }
   stopImplicitCluster()
   
-  # Append the estimation options
-  
-  grid %<>% 
+  # Append the estimation options as some lead to multiple estimates
+  grid %<>%
     as.data.table() %>% 
-    .[, risk := ifelse(risk_cut != 0, 1, 0)] %>% 
+    .[, risk_inc := ifelse(risk_cut != 0, 1, 
+                           ifelse(inc_cut != 0, 2, 
+                                  ifelse(risk_cut !=0 & inc_cut != 0, 3, 0)))] %>% 
     .[, ord := seq(1, .N)]
   
-  risk_grid <- grid %>% 
-    .[risk == 1, ]
+  risk_inc_grid <- grid %>% 
+    .[risk_inc %in% c(1, 2)]
+  
+  both_grid <- grid %>% 
+    .[risk_inc == 3, ] %>% 
+    rbind(., ., .)
   
   grid %<>% 
-    rbind(risk_grid) %>% 
+    rbind(risk_inc_grid) %>% 
+    rbind(both_grid) %>% 
     .[order(ord), ]
   
   dtp %<>% 
@@ -229,5 +235,5 @@ if(getRversion() >= "2.15.1") {
                            "ub", "obs", "first_mo", "pre_mort", "spend_pred", "x1", 
                            "year_cut", "rfrnc_yr", "risk", "high_risk", 
                            "risk_cut", "risk_type", "ord", "inc", "high_inc", 
-                           "inc_var"))
+                           "inc_var", "risk_inc"))
 }
