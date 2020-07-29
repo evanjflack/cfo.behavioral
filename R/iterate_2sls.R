@@ -60,6 +60,8 @@ iterate_2sls <- function(DT, grid, max_cores) {
                   se_type = grid$se_type, 
                   risk_type = grid$risk_type, 
                   risk_cut = grid$risk_cut, 
+                  inc_var = grid$inc_var, 
+                  inc_cut = grid$inc_cut,
                   .combine = "rbind",
                   .multicombine = TRUE) %dopar% 
     {
@@ -67,11 +69,12 @@ iterate_2sls <- function(DT, grid, max_cores) {
       # Prep data table
       DT_fit <- prep_2sls_data(DT, initial_days,  outcome, 
                                outcome_period, x_var, instrument, keep_age, keep_jan, 
-                               keep_join_month, keep_same, risk_type, risk_cut)
+                               keep_join_month, keep_same, risk_type, risk_cut, 
+                               inc_var, inc_cut)
       
       # Make forumla
       controls <- c("race", "sex")
-      form <- make_2sls_formula(controls, time_interact, deg, risk_cut)
+      form <- make_2sls_formula(controls, time_interact, deg, risk_cut, inc_cut)
       
       # Fit 2SLS
       fit_iv <- iv_robust(form, data = DT_fit, se_type = se_type)
@@ -109,7 +112,7 @@ iterate_2sls <- function(DT, grid, max_cores) {
 
 prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var, 
                            instrument, keep_age, keep_jan, keep_join_month, 
-                           keep_same, risk_type, risk_cut) {
+                           keep_same, risk_type, risk_cut, inc_var, inc_cut) {
   
   DT_fit <- copy(DT) %>%
     .[, x1 := get(x_var)] %>% 
@@ -140,6 +143,13 @@ prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var,
       .[outcome < 9999]
   }
   
+  if (inc_cut != 0) {
+    DT_fit %<>% 
+      .[, inc := get(inc_var)] %>% 
+      .[!is.na(inc)] %>% 
+      .[, high_inc := ifelse(inc >= quantile(inc, inc_cut), 1, 0)]
+  }
+  
   DT_fit %<>% 
     .[, pred_cut := cut(spend_pred, 
                         breaks = c(-Inf, quantile(spend_pred, c(seq(.1, .7, .1), seq(.71, .99, .01))), Inf), 
@@ -159,7 +169,13 @@ paste_factor <- function(x) {
   paste0("factor(", x, ")")
 }
 
-make_2sls_formula <- function(controls, time_interact, deg, risk_cut) {
+controls <- c("race", "sex")
+time_interact <- "rfrnc_yr"
+deg <- 1
+risk_cut <- .5
+inc_cut <- .5
+
+make_2sls_formula <- function(controls, time_interact, deg, risk_cut, inc_cut) {
   inst1 <- paste0("poly(instrument, ", deg, ")")
   interacts <- c("pred_cut", time_interact)
   interacts %<>% 
@@ -171,15 +187,29 @@ make_2sls_formula <- function(controls, time_interact, deg, risk_cut) {
       paste0("*", "factor(high_risk)")
   }
   
+  if (inc_cut != 0) {
+    interacts %<>% 
+      paste0("*", "factor(high_inc)")
+  }
+  
+  interacts
+  
   controls %<>% 
     lapply(paste_factor) %>% 
     unlist() %>% 
     paste(collapse = " + ")
   
-  if (risk_cut == 0) {
+  if (risk_cut == 0 & inc_cut == 0) {
     ss_form <- paste0("outcome ~ x1 + ", interacts, " + ", controls)
-  } else {
-    ss_form <- paste0("outcome ~ x1*factor(high_risk) + ", interacts, " + ", controls)
+  } else if (risk_cut != 0 & inc_cut == 0){
+    ss_form <- paste0("outcome ~ x1*factor(high_risk) + ", interacts, " + ", 
+                      controls)
+  } else if (risk_cut == 0 & inc_cut != 0) {
+    ss_form <- paste0("outcome ~ x1*factor(high_inc) + ", interacts, " + ", 
+                      controls)
+  } else if (risk_cut != 0 & inc_cut != 0) {
+    ss_form <- paste0("outcome ~ x1*factor(high_risk)*factor(high_inc) + ", 
+                      interacts, " + ", controls)
   }
   
   inst_form <- paste(inst1, interacts, sep = "*") %>% 
