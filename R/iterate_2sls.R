@@ -134,6 +134,11 @@ prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var,
       .[, pre_mort := rowSums(.SD), .SDcols = paste0("mort_", seq(1, outcome_period - 1))] %>% 
       .[pre_mort == 0, ]
   }
+
+  if (outcome == "fill_days") {
+    DT_fit %<>% 
+      .[outcome < 9999]
+  }
   
   DT_fit %<>% 
     .[, pred_cut := cut(spend_pred, 

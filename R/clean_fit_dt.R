@@ -35,5 +35,5 @@ clean_fit_dt <- function(dt, id_vars, est_var = "estimate", se_var = "std.error"
 
 # Deal with R CMD check
 if(getRversion() >= "2.15.1") {
-  utils::globalVariables(c("est", "est_se", "p_val", "stars"))
+  utils::globalVariables(c("est", "est_se", "p_val", "stars1"))
 }
