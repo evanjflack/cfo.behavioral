@@ -20,7 +20,7 @@ clean_fit_dt <- function(dt, id_vars, est_var = "estimate", se_var = "std.error"
   dt_fit <- dt %>% 
     .[, `:=`(est = get(est_var), se = get(se_var), p_val = get(p_var))] %>% 
     .[, c(id_vars, "est", "se", "p_val"), with = F] %>% 
-    .[, lapply(.SD, signif, digits = dig), by = id_vars] %>%
+    .[, lapply(.SD, function(x) ifelse(x >= 1, round(x, 2), signif(x, digits = 2))), by = id_vars] %>%
     .[, stars1 := ifelse(p_val <= .01, "***", ifelse(p_val <= .05, "**",
                                                     ifelse(p_val <= .1,
                                                            "*", "")))] %>%
