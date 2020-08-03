@@ -3,7 +3,8 @@
 \docType{package}
 \name{polypharmacy}
 \alias{polypharmacy}
+\alias{polypharmacy-package}
 \title{\code{} package}
 \description{
-\code{} package
+R package for the work in progress "Behavioral Hazard and Patient Decision Making" by Chanddra, Flack, and Obermeyer.
 }

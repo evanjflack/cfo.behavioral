@@ -1,5 +1,8 @@
 # Tests that subset sample returns the correct
 
+library(magrittr)
+library(data.table)
+
 N <- 10000
 K1 <- 1000
 K2 <- 5000
@@ -17,5 +20,6 @@ ret <- subset_sample(DT, c("keep_1", "keep_2"))
 test_that("subset_sample works", {
   expect_equal(length(ret), 3)
   expect_equal(nrow(ret$DT_subset), exp_row)
-  expect_equal(nrow(ret$DT_subset), ret$obs[, obs[.N]])
+  expect_equal(nrow(ret$DT_subset), ret$obs[, "obs"][3])
 })
+
