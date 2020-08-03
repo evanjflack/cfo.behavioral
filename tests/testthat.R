@@ -1,4 +1,4 @@
 library(testthat)
-library(polypharmacy)
+library(cfo.behavioral)
 
 test_check("polypharmacy")

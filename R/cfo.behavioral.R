@@ -2,7 +2,7 @@
 #'
 #' @docType package
 #' 
-#' @name cfo_behavioral
+#' @name cfo.behavioral
 #' 
 #' @description 
 #' R package for the work in progress "Behavioral Hazard and Patient Decision Making" by Chanddra, Flack, and Obermeyer.

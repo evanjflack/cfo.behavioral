@@ -1,4 +1,4 @@
-Package: cfo_behavioral
+Package: cfo.behavioral
 Type: Package
 Title: Behavioral Hazard and Patient Decision Making
 Version: 0.1.0
@@ -6,9 +6,7 @@ Author: Authors@R: c(
   person("Evan", "Flack", email = "evanjflack@gmail.com",
   role = c("aut", "cre")))
 Maintainer: Evan Flack <evanjflack@gmail.com>
-Description: This package contains functions for scripts used in the work in 
- progress "Behavioral Hazard and patient Decision Making" by Chandra, Flack, and
- Obermeyer.
+Description: This package contains functions for scripts used in the work in progress "Behavioral Hazard and patient Decision Making" by Chandra, Flack, and Obermeyer.
 Depends:
   data.table,
   magrittr
