@@ -62,6 +62,7 @@ iterate_2sls <- function(DT, grid, max_cores) {
                   risk_cut = grid$risk_cut, 
                   inc_var = grid$inc_var, 
                   inc_cut = grid$inc_cut,
+                  max_inst = grid$max_inst,
                   .combine = "rbind",
                   .multicombine = TRUE) %dopar% 
     {
@@ -70,7 +71,7 @@ iterate_2sls <- function(DT, grid, max_cores) {
       DT_fit <- prep_2sls_data(DT, initial_days,  outcome, 
                                outcome_period, x_var, instrument, keep_age, keep_jan, 
                                keep_join_month, keep_same, risk_type, risk_cut, 
-                               inc_var, inc_cut)
+                               inc_var, inc_cut, max_inst)
       
       # Make forumla
       controls <- c("race", "sex")
@@ -118,7 +119,8 @@ iterate_2sls <- function(DT, grid, max_cores) {
 
 prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var, 
                            instrument, keep_age, keep_jan, keep_join_month, 
-                           keep_same, risk_type, risk_cut, inc_var, inc_cut) {
+                           keep_same, risk_type, risk_cut, inc_var, inc_cut, 
+                           max_inst) {
   
   DT_fit <- copy(DT) %>%
     .[, x1 := get(x_var)] %>% 
@@ -126,6 +128,9 @@ prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var,
     .[, instrument := get(instrument)] %>% 
     .[, spend_pred := get(paste0("ensemble_pred_", initial_days))] %>%
     .[, year_cut := ifelse(rfrnc_yr <= 2010, "2007-2010", "2011-2012")]
+  
+  DT_fit %<>% 
+    .[instrument <= max_inst, ]
 
   
   crit_grid <- c("keep_age" = keep_age, 
@@ -235,5 +240,5 @@ if(getRversion() >= "2.15.1") {
                            "ub", "obs", "first_mo", "pre_mort", "spend_pred", "x1", 
                            "year_cut", "rfrnc_yr", "risk", "high_risk", 
                            "risk_cut", "risk_type", "ord", "inc", "high_inc", 
-                           "inc_var", "risk_inc"))
+                           "inc_var", "risk_inc", "max_inst"))
 }
