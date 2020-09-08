@@ -94,9 +94,9 @@ iterate_2sls <- function(DT, grid, max_cores) {
   # Append the estimation options as some lead to multiple estimates
   grid %<>%
     as.data.table() %>% 
-    .[, risk_inc := ifelse(risk_cut != 0, 1, 
-                           ifelse(inc_cut != 0, 2, 
-                                  ifelse(risk_cut !=0 & inc_cut != 0, 3, 0)))] %>% 
+    .[, risk_inc := ifelse(risk_cut != 0 & inc_cut == 0, 1, 
+                           ifelse(inc_cut != 0 & risk_cut == 0, 2, 
+                                  ifelse(risk_cut != 0 & inc_cut != 0, 3, 0)))] %>% 
     .[, ord := seq(1, .N)]
   
   risk_inc_grid <- grid %>% 
