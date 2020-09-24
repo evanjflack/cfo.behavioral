@@ -10,7 +10,8 @@ clean_fit_dt(
   est_var = "estimate",
   se_var = "std.error",
   p_var = "p.value",
-  dig = 3
+  dig = 3,
+  sig = F
 )
 }
 \arguments{
@@ -27,6 +28,8 @@ estimate}
 
 \item{dig}{integer, number of significant features to round estimate and 
 standard error}
+
+\item{sig}{logical (default = F), if T, rounds using significant figures}
 }
 \value{
 data.table ready to be printed with xtable

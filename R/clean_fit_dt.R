@@ -11,16 +11,27 @@
 #' @param p_var character, name of the  value column
 #' @param dig integer, number of significant features to round estimate and 
 #'  standard error
+#' @param sig logical (default = F), if T, rounds using significant figures
 #'  
 #' @return data.table ready to be printed with xtable
 #' 
 #' @export
 clean_fit_dt <- function(dt, id_vars, est_var = "estimate", se_var = "std.error", 
-                     p_var = "p.value", dig = 3) {
+                     p_var = "p.value", dig = 3, sig = F) {
   dt_fit <- dt %>% 
     .[, `:=`(est = get(est_var), se = get(se_var), p_val = get(p_var))] %>% 
-    .[, c(id_vars, "est", "se", "p_val"), with = F] %>% 
-    .[, lapply(.SD, function(x) ifelse(x >= 1, round(x, 2), signif(x, digits = 2))), by = id_vars] %>%
+    .[, c(id_vars, "est", "se", "p_val"), with = F]
+  
+  if (sig == T) {
+    dt_fit %<>% 
+      .[, lapply(.SD, function(x) ifelse(x >= 1, round(x, 2), 
+                                         signif(x, digits = dig))), by = id_vars]
+  } else {
+    dt_fit %<>% 
+      .[, lapply(.SD, function(x) ifelse(x >= 1, round(x, 2), 
+                                         round(x, dig))), by = id_vars]
+  }
+  dt_fit %<>% 
     .[, stars1 := ifelse(p_val <= .01, "***", ifelse(p_val <= .05, "**",
                                                     ifelse(p_val <= .1,
                                                            "*", "")))] %>%
