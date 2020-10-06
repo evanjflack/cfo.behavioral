@@ -1,14 +1,14 @@
 ![](https://github.com/evanjflack/polypharmacy/workflows/R-CMD-check/badge.svg)
-[![BuildStatus](https://travis-ci.com/evanjflack/polypharmacy.svg?branch=master)](https://travis-ci.com/evanjflack/polypharmacy)
+[![BuildStatus](https://travis-ci.com/evanjflack/cfo.behavioral.svg?branch=master)
 
 # polypharmacy
-R package for the working paper "Measuring Behavioral Hazard in Health Care," functions for sample and feature creation, and estimation.
+R package for the working paper "Detecting Behavioral Hazard in Health Care," functions for sample and feature creation, and estimation.
 
-### Contributors
+### Source Code Coathors
 * Evan Flack (evanjflack@gmail.com)
   * Research Assistant, Harvard Kennedy School
 
-### Collaborators
+### Other Coauthors
 * Amitabh Chandra
   * Professor, Harvard Kennedy School and Harvard Business School
 * Ziad Obermeyer
