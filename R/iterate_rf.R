@@ -60,7 +60,7 @@ iterate_rf <- function(DT, grid, max_cores) {
       # Format output
       dtp1 <- tidy(fit_iv) %>% 
         as.data.table() %>% 
-        .[grepl("x1", term)] %>%
+        .[grepl("instrument", term)] %>%
         setnames(c("conf.low", "conf.high"), 
                  c("lb", "ub")) %>% 
         .[, .(term, estimate, std.error, statistic, p.value, lb, ub)] %>% 
