@@ -244,5 +244,5 @@ if(getRversion() >= "2.15.1") {
                            "ub", "obs", "first_mo", "pre_mort", "spend_pred", "x1", 
                            "year_cut", "rfrnc_yr", "risk", "high_risk", 
                            "risk_cut", "risk_type", "ord", "inc", "high_inc", 
-                           "inc_var", "risk_inc", "max_inst"))
+                           "inc_var", "risk_inc", "max_inst", "pred_cut1"))
 }
