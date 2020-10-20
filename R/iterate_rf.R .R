@@ -1,4 +1,4 @@
-#' Estimate 2SLS Mortality Model
+#' Estimate reduced form models
 #' 
 #' Iterate estimation of the 2SLS mortality model over multiple specificiations.
 #' 
@@ -10,40 +10,17 @@
 #' @param max_cores integer, maximum number of parallels cores allowed to run at
 #'  once
 #'  
-#' @details grid
-#' \itemize{
-#'  \item{outcome: }{character, name of outcome variable, ex: "mort"}
-#'  \item{outcome_period: }{integer, period of outcome, ex: 30}
-#'  \item{x_var: }{character, name of the endogenous variable}
-#'  \item{instrument: }{character, name of instumental variable, ex: "first_mo"}
-#'  \item{deg: }{integer, degree polynomial of instrument to include, ex: 2}
-#'  \item{cut_int: }{numeric, size of predicted spending bins, ex: 500}
-#'  \item{pred_type: }{character, type of spending prediction to use, ex: "ensemble}
-#'  \item{time_interact: }{character, name of the time variable to interact with
-#'  #'    instrument and predicted spending, ex: "rfrnc_yr"}
-#'  \item{initial_days: }{integer, number of initial_days used in prediction}
-#'  \item{se_type: }{character, type of SEs to calculate, inherits from estimatr 
-#'   iv_robust, ex: "stata"}
-#'  \item{keep_age: }{boolean, if 1 then subsets sample to only those enrolling 
-#'   at age 65}
-#'  \item{keep_jan: }{boolean, if 1 then removes January enrollees from sample}
-#'  \item{keep_join_month: }{boolean, if 1 then restricts sample to those 
-#'   enrolling in initial enrollment period (IEP)}
-#'  \item{keep_same: }{boolean, if 1 then restricts sample to those enrolling in
-#'   theor birth month}
-#' }
-#'  
 #' @return data.table with the estimation options (from grid), 2SLS estimates, 
 #'  SEs, p-values, CIs, etc...
 #'  
-#' @importFrom estimatr iv_robust
+#' @importFrom estimatr lm_robust
 #' @importFrom data.table as.data.table setnames copy
 #' @importFrom foreach foreach %dopar%
 #' @importFrom doParallel registerDoParallel stopImplicitCluster
 #' @importFrom stats as.formula
 #'  
 #' @export
-iterate_2sls <- function(DT, grid, max_cores) {
+iterate_rf <- function(DT, grid, max_cores) {
   cores <- min(max_cores, nrow(grid))
   registerDoParallel(cores = cores)
   dtp  <- foreach(instrument = grid$instrument, 
@@ -131,7 +108,7 @@ prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var,
   
   DT_fit %<>% 
     .[instrument <= max_inst, ]
-
+  
   
   crit_grid <- c("keep_age" = keep_age, 
                  "keep_jan" = keep_jan, 
@@ -148,7 +125,7 @@ prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var,
       .[, pre_mort := rowSums(.SD), .SDcols = paste0("mort_", seq(1, outcome_period - 1))] %>% 
       .[pre_mort == 0, ]
   }
-
+  
   if (outcome == "fill_days") {
     DT_fit %<>% 
       .[outcome < 9999]
@@ -165,10 +142,6 @@ prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var,
     .[, pred_cut := cut(spend_pred, 
                         breaks = c(-Inf, quantile(spend_pred, c(seq(.1, .7, .1), seq(.71, .99, .01))), Inf), 
                         labels = c(seq(10, 70, 10), seq(71, 100, 1))), 
-      by = first_mo] %>% 
-    .[, pred_cut1 := ifelse(spend_pred <= quantile(spend_pred, .7), 
-                            1, ifelse(spend_pred <= 
-                                        quantile(spend_pred, .97), 2, 3)), 
       by = first_mo]
   
   if (risk_cut != 0) {
