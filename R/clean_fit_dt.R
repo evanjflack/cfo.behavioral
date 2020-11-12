@@ -26,12 +26,12 @@ clean_fit_dt <- function(dt, id_vars, est_var = "estimate", se_var = "std.error"
     dt_fit %<>% 
       .[, lapply(.SD, function(x) ifelse(x >= 1, round(x, 2), 
                                          signif(x, digits = dig))), 
-        by = c(id_vars, "p.value")]
+        by = c(id_vars, "p_val")]
   } else {
     dt_fit %<>% 
       .[, lapply(.SD, function(x) ifelse(x >= 1, round(x, 2), 
                                          format(round(x, dig), nsmall = dig))), 
-        by = c(id_vars, "p.value")]
+        by = c(id_vars, "p_val")]
   }
   dt_fit %<>% 
     .[, stars1 := ifelse(p_val <= .01, "***", ifelse(p_val <= .05, "**",
