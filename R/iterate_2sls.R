@@ -161,11 +161,21 @@ prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var,
       .[, high_inc := ifelse(inc >= quantile(inc, inc_cut), 1, 0)]
   }
   
+  if (initial_days > 30) {
+    DT_fit %<>% 
+      .[, pred_cut := cut(spend_pred, 
+                          breaks = c(-Inf, quantile(spend_pred, c(seq(.1, .7, .1), seq(.71, .99, .01))), Inf), 
+                          labels = c(seq(10, 70, 10), seq(71, 100, 1))), 
+        by = first_mo]
+  } else if (initial_days == 30) {
+    DT_fit %<>% 
+      .[, pred_cut := cut(spend_pred, 
+                          breaks = c(-Inf, quantile(spend_pred, c(seq(.2, .7, .1), seq(.71, .99, .01))), Inf), 
+                          labels = c(seq(20, 70, 10), seq(71, 100, 1))), 
+        by = first_mo]
+  }
+
   DT_fit %<>% 
-    .[, pred_cut := cut(spend_pred, 
-                        breaks = c(-Inf, quantile(spend_pred, c(seq(.1, .7, .1), seq(.71, .99, .01))), Inf), 
-                        labels = c(seq(10, 70, 10), seq(71, 100, 1))), 
-      by = first_mo] %>% 
     .[, pred_cut1 := ifelse(spend_pred <= quantile(spend_pred, .7), 
                             1, ifelse(spend_pred <= 
                                         quantile(spend_pred, .97), 2, 3)), 
