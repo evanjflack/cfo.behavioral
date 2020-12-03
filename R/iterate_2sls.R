@@ -170,8 +170,8 @@ prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var,
   } else if (initial_days == 30) {
     DT_fit %<>% 
       .[, pred_cut := cut(spend_pred, 
-                          breaks = c(-Inf, quantile(spend_pred, c(seq(.2, .7, .1), seq(.71, .99, .01))), Inf), 
-                          labels = c(seq(20, 70, 10), seq(71, 100, 1))), 
+                          breaks = c(-Inf, quantile(spend_pred, c(.2, seq(.4, .7, .1), seq(.71, .99, .01))), Inf), 
+                          labels = c(20, seq(40, 70, 10), seq(71, 100, 1))), 
         by = first_mo]
   }
 
