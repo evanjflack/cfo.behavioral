@@ -71,7 +71,7 @@ iterate_2sls <- function(DT, grid, max_cores) {
       DT_fit <- prep_2sls_data(DT, initial_days,  outcome, 
                                outcome_period, x_var, instrument, keep_age, keep_jan, 
                                keep_join_month, keep_same, risk_type, risk_cut, 
-                               inc_var, inc_cut, max_inst)
+                               inc_var, inc_cut, max_inst, bin_type, exc_nc)
       
       # Make forumla
       controls <- c("race", "sex")
@@ -120,7 +120,7 @@ iterate_2sls <- function(DT, grid, max_cores) {
 prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var, 
                            instrument, keep_age, keep_jan, keep_join_month, 
                            keep_same, risk_type, risk_cut, inc_var, inc_cut, 
-                           max_inst) {
+                           max_inst, bin_type, exc_nc) {
   
   DT_fit <- copy(DT) %>%
     .[, x1 := get(x_var)] %>% 
@@ -180,6 +180,16 @@ prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var,
                             1, ifelse(spend_pred <= 
                                         quantile(spend_pred, .97), 2, 3)), 
       by = first_mo]
+  
+  if (exc_nc == T) {
+    DT_fit %<>% 
+      .[!(pred_cut %in% c(94, 95, 96, 97, 98))]
+  }
+  
+  if (bin_type == "three") {
+    DT_fit %<>% 
+      .[, pred_cut := pred_cut1]
+  }
   
   if (risk_cut != 0) {
     DT_fit %<>% 
