@@ -63,6 +63,8 @@ iterate_2sls <- function(DT, grid, max_cores) {
                   inc_var = grid$inc_var, 
                   inc_cut = grid$inc_cut,
                   max_inst = grid$max_inst,
+                  bin_type = grid$bin_type, 
+                  exc_nc = grid$exc_nc,
                   .combine = "rbind",
                   .multicombine = TRUE) %dopar% 
     {
