@@ -41,6 +41,8 @@ iterate_rf <- function(DT, grid, max_cores) {
                   inc_var = grid$inc_var, 
                   inc_cut = grid$inc_cut,
                   max_inst = grid$max_inst,
+                  bin_type = grid$bin_type, 
+                  exc_nc = grid$exc_nc, 
                   .combine = "rbind",
                   .multicombine = TRUE) %dopar% 
     {
@@ -49,7 +51,7 @@ iterate_rf <- function(DT, grid, max_cores) {
       DT_fit <- prep_2sls_data(DT, initial_days,  outcome, 
                                outcome_period, x_var, instrument, keep_age, keep_jan, 
                                keep_join_month, keep_same, risk_type, risk_cut, 
-                               inc_var, inc_cut, max_inst)
+                               inc_var, inc_cut, max_inst, bin_type, exc_nc)
       
       # Make forumla
       form <- stats::formula(outcome ~ instrument:factor(pred_cut1) + factor(pred_cut1))

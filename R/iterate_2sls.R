@@ -133,8 +133,8 @@ prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var,
   
   DT_fit %<>% 
     .[instrument <= max_inst, ]
-
   
+
   crit_grid <- c("keep_age" = keep_age, 
                  "keep_jan" = keep_jan, 
                  "keep_join_month" = keep_join_month, 
