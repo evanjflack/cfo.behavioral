@@ -65,6 +65,8 @@ iterate_2sls <- function(DT, grid, max_cores) {
                   max_inst = grid$max_inst,
                   bin_type = grid$bin_type, 
                   exc_nc = grid$exc_nc,
+                  cut1 = grid$cut1, 
+                  cut2 = grid$cut2,
                   .combine = "rbind",
                   .multicombine = TRUE) %dopar% 
     {
@@ -73,7 +75,8 @@ iterate_2sls <- function(DT, grid, max_cores) {
       DT_fit <- prep_2sls_data(DT, initial_days,  outcome, 
                                outcome_period, x_var, instrument, keep_age, keep_jan, 
                                keep_join_month, keep_same, risk_type, risk_cut, 
-                               inc_var, inc_cut, max_inst, bin_type, exc_nc)
+                               inc_var, inc_cut, max_inst, bin_type, exc_nc, 
+                               cut1, cut2)
       
       # Make forumla
       controls <- c("race", "sex")
@@ -122,7 +125,7 @@ iterate_2sls <- function(DT, grid, max_cores) {
 prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var, 
                            instrument, keep_age, keep_jan, keep_join_month, 
                            keep_same, risk_type, risk_cut, inc_var, inc_cut, 
-                           max_inst, bin_type, exc_nc) {
+                           max_inst, bin_type, exc_nc, cut1, cut2) {
   
   DT_fit <- copy(DT) %>%
     .[, x1 := get(x_var)] %>% 
@@ -166,21 +169,21 @@ prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var,
   if (initial_days > 30) {
     DT_fit %<>% 
       .[, pred_cut := cut(spend_pred, 
-                          breaks = c(-Inf, quantile(spend_pred, c(seq(.1, .7, .1), seq(.71, .99, .01))), Inf), 
-                          labels = c(seq(10, 70, 10), seq(71, 100, 1))), 
+                          breaks = c(-Inf, quantile(spend_pred, c(seq(.1, cut1, .1), seq(cut1 + .01, .99, .01))), Inf), 
+                          labels = c(seq(10, 100*cut1, 10), seq(100*cut1 + 1, 100, 1))), 
         by = first_mo]
   } else if (initial_days == 30) {
     DT_fit %<>% 
       .[, pred_cut := cut(spend_pred, 
-                          breaks = c(-Inf, quantile(spend_pred, c(.2, seq(.4, .7, .1), seq(.71, .99, .01))), Inf), 
-                          labels = c(20, seq(40, 70, 10), seq(71, 100, 1))), 
+                          breaks = c(-Inf, quantile(spend_pred, c(.2, seq(.4, cut1, .1), seq(cut1 + .01, .99, .01))), Inf), 
+                          labels = c(20, seq(40, 100*cut1, 10), seq(100*cut1 + 1, 100, 1))), 
         by = first_mo]
   }
 
   DT_fit %<>% 
-    .[, pred_cut1 := ifelse(spend_pred <= quantile(spend_pred, .7), 
+    .[, pred_cut1 := ifelse(spend_pred <= quantile(spend_pred, cut1), 
                             1, ifelse(spend_pred <= 
-                                        quantile(spend_pred, .97), 2, 3)), 
+                                        quantile(spend_pred, cut2), 2, 3)), 
       by = first_mo]
   
   if (exc_nc == T) {
