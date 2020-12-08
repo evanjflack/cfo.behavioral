@@ -43,6 +43,8 @@ iterate_rf <- function(DT, grid, max_cores) {
                   max_inst = grid$max_inst,
                   bin_type = grid$bin_type, 
                   exc_nc = grid$exc_nc, 
+                  cut1 = grid$cut1, 
+                  cut2 = grid$cut2, 
                   .combine = "rbind",
                   .multicombine = TRUE) %dopar% 
     {
