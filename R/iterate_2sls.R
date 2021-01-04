@@ -154,23 +154,18 @@ prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var,
     DT_fit %<>%
       .[get(k) == 1, ]
   }
-  # remove those that dies in earlier periods 
-  if (outcome_period > 1 & outcome == "mort") {
-    DT_fit %<>% 
-      .[, pre_mort := rowSums(.SD), .SDcols = paste0("mort_", seq(1, outcome_period - 1))] %>% 
-      .[pre_mort == 0, ]
-  }
-
-  if (outcome == "fill_days") {
-    DT_fit %<>% 
-      .[outcome < 9999]
-  }
   
   if (inc_cut != 0) {
     DT_fit %<>% 
       .[, inc := get(inc_var)] %>% 
       .[!is.na(inc)] %>% 
       .[, high_inc := ifelse(inc >= quantile(inc, inc_cut), 1, 0)]
+  }
+  
+  if (risk_cut != 0) {
+    DT_fit %<>% 
+      .[, risk := get(paste0("ensemble_pred_", risk_type, "_", initial_days))] %>% 
+      .[, high_risk := ifelse(risk >= quantile(risk, risk_cut), 1, 0), by = first_mo]
   }
   
   if (initial_days > 30) {
@@ -193,6 +188,18 @@ prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var,
                                         quantile(spend_pred, cut2), 2, 3)), 
       by = first_mo]
   
+  # remove those that dies in earlier periods 
+  if (outcome_period > 1 & outcome == "mort") {
+    DT_fit %<>% 
+      .[, pre_mort := rowSums(.SD), .SDcols = paste0("mort_", seq(1, outcome_period - 1))] %>% 
+      .[pre_mort == 0, ]
+  }
+  
+  if (outcome == "fill_days") {
+    DT_fit %<>% 
+      .[outcome < 9999]
+  }
+  
   if (exc_nc == T) {
     DT_fit %<>% 
       .[!(pred_cut %in% c(94, 95, 96, 97, 98))]
@@ -201,12 +208,6 @@ prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var,
   if (bin_type == "three") {
     DT_fit %<>% 
       .[, pred_cut := pred_cut1]
-  }
-  
-  if (risk_cut != 0) {
-    DT_fit %<>% 
-      .[, risk := get(paste0("ensemble_pred_", risk_type, "_", initial_days))] %>% 
-      .[, high_risk := ifelse(risk >= quantile(risk, risk_cut), 1, 0), by = first_mo]
   }
   
   return(DT_fit)
