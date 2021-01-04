@@ -67,6 +67,7 @@ iterate_2sls <- function(DT, grid, max_cores) {
                   exc_nc = grid$exc_nc,
                   cut1 = grid$cut1, 
                   cut2 = grid$cut2,
+                  plan_fe = grid$plan_fe,
                   .combine = "rbind",
                   .multicombine = TRUE) %dopar% 
     {
@@ -83,7 +84,13 @@ iterate_2sls <- function(DT, grid, max_cores) {
       form <- make_2sls_formula(controls, time_interact, deg, risk_cut, inc_cut)
       
       # Fit 2SLS
-      fit_iv <- iv_robust(form, data = DT_fit, se_type = se_type)
+      if (plan_fe == F) {
+        fit_iv <- iv_robust(form, data = DT_fit, se_type = se_type)
+      } else if (plan_fe == T) {
+        fit_iv <- iv_robust(form, data = DT_fit, se_type = se_type, 
+                            fixed_effects = ~ cntrct + pbp)
+      }
+      
       
       # Format output
       dtp1 <- tidy(fit_iv) %>% 
