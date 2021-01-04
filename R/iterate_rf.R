@@ -58,7 +58,8 @@ iterate_rf <- function(DT, grid, max_cores) {
                                cut1, cut2)
       
       # Make forumla
-      form <- stats::formula(outcome ~ instrument:factor(pred_cut1) + factor(pred_cut1))
+      form <- stats::formula(outcome ~ instrument:factor(pred_cut1) + factor(pred_cut1) + 
+                               factor(race) + factor(sex) + factor(rfrnc_yr))
       
       # Fits reduced form
       if (plan_fe == F) {
