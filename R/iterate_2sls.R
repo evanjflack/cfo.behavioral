@@ -88,7 +88,7 @@ iterate_2sls <- function(DT, grid, max_cores) {
         fit_iv <- iv_robust(form, data = DT_fit, se_type = se_type)
       } else if (plan_fe == T) {
         fit_iv <- iv_robust(form, data = DT_fit, se_type = se_type, 
-                            fixed_effects = ~ cntrct + pbp)
+                            fixed_effects = ~ cntrct_pbp_rfrnc_yr)
       }
       
       
@@ -139,7 +139,8 @@ prep_2sls_data <- function(DT, initial_days, outcome, outcome_period, x_var,
     .[, outcome := get(paste(outcome, outcome_period, sep = "_"))] %>% 
     .[, instrument := get(instrument)] %>% 
     .[, spend_pred := get(paste0("ensemble_pred_", initial_days))] %>%
-    .[, year_cut := ifelse(rfrnc_yr <= 2010, "2007-2010", "2011-2012")]
+    .[, year_cut := ifelse(rfrnc_yr <= 2010, "2007-2010", "2011-2012")] %>% 
+    .[, cntrct_pbp_rfrnc_yr := paste(cntrct, pbp, rfrnc_yr, sep = "_")]
   
   DT_fit %<>% 
     .[instrument <= max_inst, ]
@@ -278,5 +279,6 @@ if(getRversion() >= "2.15.1") {
                            "x1", "year_cut", "rfrnc_yr", "risk", "high_risk", 
                            "risk_cut", "risk_type", "ord", "inc", "high_inc", 
                            "inc_var", "risk_inc", "max_inst", "pred_cut1", 
-                           "bin_type", "exc_nc", "cut1", "cut2", "plan_fe"))
+                           "bin_type", "exc_nc", "cut1", "cut2", "plan_fe", 
+                           "cntrct_pbp_rfrnc_yr"))
 }
