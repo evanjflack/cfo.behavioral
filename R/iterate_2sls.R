@@ -280,5 +280,5 @@ if(getRversion() >= "2.15.1") {
                            "risk_cut", "risk_type", "ord", "inc", "high_inc", 
                            "inc_var", "risk_inc", "max_inst", "pred_cut1", 
                            "bin_type", "exc_nc", "cut1", "cut2", "plan_fe", 
-                           "cntrct_pbp_rfrnc_yr"))
+                           "cntrct_pbp_rfrnc_yr", "cntrct", "pbp"))
 }

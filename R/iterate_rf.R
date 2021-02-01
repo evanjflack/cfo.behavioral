@@ -66,7 +66,7 @@ iterate_rf <- function(DT, grid, max_cores) {
         fit_rf <- lm_robust(form, data = DT_fit, se_type = se_type)
       } else if (plan_fe == T) {
         fit_rf <- lm_robust(form, data = DT_fit, se_type = se_type, 
-                            fixed_effects = ~ cntrct + pbp)
+                            fixed_effects = ~ cntrct_pbp_rfrnc_yr)
       }
       
       # Format output
@@ -116,5 +116,6 @@ if(getRversion() >= "2.15.1") {
                            "x1", "year_cut", "rfrnc_yr", "risk", "high_risk", 
                            "risk_cut", "risk_type", "ord", "inc", "high_inc", 
                            "inc_var", "risk_inc", "max_inst", "pred_cut1", 
-                           "bin_type", "exc_nc", "cut1", "cut2", "plan_fe"))
+                           "bin_type", "exc_nc", "cut1", "cut2", "plan_fe", 
+                           "cntrct", "pbp", "rfrnc_yr"))
 }
